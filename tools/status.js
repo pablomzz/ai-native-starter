@@ -23,10 +23,28 @@ const cfg = readConfig();
 const date = today(cfg.timezone);
 const team = owners(cfg);
 const gitName = (spawnSync('git', ['config', 'user.name'], { encoding: 'utf8' }).stdout || '').trim();
-let who = action === 'accept' ? rest.join(' ') : '';
-if (!who) who = team.find((o) => o.toLowerCase() === gitName.toLowerCase()) || team[0] || gitName || 'Owner';
+// Only an owner accepts or rejects: your git name (or the name you pass to accept) must be in the owners list.
+// It is a nudge against mistakes, not a lock: anyone can type an owner's name.
+const given = action === 'accept' ? rest.join(' ').trim() : '';
+const asked = given || gitName;
+let who = team.find((o) => o.toLowerCase() === asked.toLowerCase());
+if (!team.length || !['accept', 'reject'].includes(action)) who = who || team[0] || asked || 'Owner';
+if (!who) {
+  console.log(`Only an owner can ${action} a document. Owners in project.config.json: ${team.join(', ')}.`);
+  if (given) console.log(`"${given}" is not one of them.`);
+  else console.log(`Your git name is "${gitName || '(not set)'}". If you are ${team[0]}, set it with: git config --global user.name "${team[0]}"`);
+  process.exit(1);
+}
 
 let text = fs.readFileSync(file, 'utf8');
+
+// Accepting needs real content: the template's own blanks must be filled in first.
+if (action === 'accept') {
+  const body = text.replace(/<!--[\s\S]*?-->/g, '');
+  const blank = text.split('\n')[0].includes('<short title>') ? '<short title>'
+    : ['<something you can see or test>', '<skill names, or none>'].find((b) => body.includes(b));
+  if (blank) { console.log(`${file} still has "${blank}" from the template. Fill it in first (Claude can help), then accept it.`); process.exit(1); }
+}
 
 // Accepting a spec or plan needs its intent (and a plan's spec) to be Accepted first.
 if (action === 'accept' && kind !== 'intent') {

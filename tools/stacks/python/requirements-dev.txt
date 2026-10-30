@@ -1,0 +1,4 @@
+# The tools that npm run test and npm run lint use. Install them with:
+#   python -m pip install -r requirements-dev.txt
+pytest
+ruff

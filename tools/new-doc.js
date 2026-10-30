@@ -13,7 +13,7 @@ if (!KINDS[kind] || !rawName) {
   process.exit(1);
 }
 // Forgive the common slips: spaces, capitals, a date or ".md" typed in.
-const name = rawName.toLowerCase().replace(/\.md$/, '').replace(/^\d{6}-/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const name = rawName.toLowerCase().replace(/\.md$/, '').replace(/['’]/g, '').replace(/^\d{6}-/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 if (!name) { console.log('Use letters, numbers and dashes for the name, like "study-timer".'); process.exit(1); }
 
 const root = process.cwd();
