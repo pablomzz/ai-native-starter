@@ -1,0 +1,12 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a bare git push on a feature branch is routine",
+  "branch": "weekly-minutes",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git push"
+    }
+  },
+  "expect": "allow"
+}

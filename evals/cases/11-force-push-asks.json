@@ -1,0 +1,11 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a force push rewrites history",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git push --force origin study-timer"
+    }
+  },
+  "expect": "ask"
+}

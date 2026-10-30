@@ -1,0 +1,11 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a push to main needs the owner",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git push origin main"
+    }
+  },
+  "expect": "ask"
+}

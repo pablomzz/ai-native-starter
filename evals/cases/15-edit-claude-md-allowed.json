@@ -1,0 +1,12 @@
+{
+  "hook": "protect-paths",
+  "why": "CLAUDE.md should grow freely: it is where Claude records its repeated mistakes",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "CLAUDE.md",
+      "content": "# x"
+    }
+  },
+  "expect": "allow"
+}

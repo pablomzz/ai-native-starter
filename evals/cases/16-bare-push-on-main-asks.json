@@ -1,0 +1,12 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a bare git push while on main pushes straight to main",
+  "branch": "main",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git push"
+    }
+  },
+  "expect": "ask"
+}

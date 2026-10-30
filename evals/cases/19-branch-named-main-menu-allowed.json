@@ -1,0 +1,11 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a branch whose name contains \"main\" is not the main branch",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git push -u origin feature/main-menu"
+    }
+  },
+  "expect": "allow"
+}

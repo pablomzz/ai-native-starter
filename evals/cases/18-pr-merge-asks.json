@@ -1,0 +1,11 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "merging a pull request from the terminal lands code on main",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "gh pr merge 3 --merge"
+    }
+  },
+  "expect": "ask"
+}

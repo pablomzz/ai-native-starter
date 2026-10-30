@@ -1,0 +1,12 @@
+{
+  "hook": "plan-before-code",
+  "why": "docs are not product code, so no plan is needed to write them",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "docs/intent/261001-x.md",
+      "content": "x"
+    }
+  },
+  "expect": "allow"
+}

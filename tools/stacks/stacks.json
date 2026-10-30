@@ -1,0 +1,32 @@
+{
+  "web": {
+    "label": "Plain web page (HTML, CSS, JavaScript) - the easiest start",
+    "LANGUAGE_AND_FRAMEWORK": "Plain HTML, CSS and JavaScript. No framework. Tests use node --test and files named *.test.js.",
+    "BUILD_COMMAND": "echo \"no build step: the page runs as it is\"",
+    "TEST_COMMAND": "node --test",
+    "LINT_COMMAND": "echo \"no linter yet\"",
+    "RUN_COMMAND": "node tools/open.js src/index.html",
+    "DESCRIBE_SRC_LAYOUT": "index.html is the page; each .js file holds functions that tests in tests/ check."
+  },
+  "python": {
+    "label": "Python - install Python 3 and run: python -m pip install pytest ruff",
+    "LANGUAGE_AND_FRAMEWORK": "Python 3. Tests use pytest, in files named tests/test_*.py. Lint with ruff.",
+    "BUILD_COMMAND": "echo \"no build step\"",
+    "TEST_COMMAND": "python -m pytest -q",
+    "LINT_COMMAND": "python -m ruff check .",
+    "RUN_COMMAND": "python src/main.py",
+    "DESCRIBE_SRC_LAYOUT": "main.py is the entry point; keep logic in small functions that tests in tests/ check."
+  },
+  "node": {
+    "label": "Node.js program (JavaScript in the terminal)",
+    "LANGUAGE_AND_FRAMEWORK": "JavaScript on Node.js, no framework. Tests use node --test and files named *.test.js.",
+    "BUILD_COMMAND": "echo \"no build step\"",
+    "TEST_COMMAND": "node --test",
+    "LINT_COMMAND": "echo \"no linter yet\"",
+    "RUN_COMMAND": "node src/index.js",
+    "DESCRIBE_SRC_LAYOUT": "index.js is the entry point; each other .js file holds functions that tests in tests/ check."
+  },
+  "other": {
+    "label": "Something else - I will type my own commands"
+  }
+}

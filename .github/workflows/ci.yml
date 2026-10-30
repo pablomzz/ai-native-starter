@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Process checks (docs chain, guardrail evals, placeholders)
+        run: npm run check
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm run test
+      - name: Build
+        run: npm run build
+      # {{ADD_A_DEPLOY_JOB_WHEN_READY}}: deploy only from the main branch, after these steps pass,
+      # and keep the owner's approval (for example a GitHub "environment" with required reviewers).

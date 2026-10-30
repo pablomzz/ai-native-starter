@@ -1,0 +1,12 @@
+{
+  "hook": "protect-paths",
+  "why": "an ordinary doc is not protected",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "docs/intent/261001-study-timer.md",
+      "content": "# Intent"
+    }
+  },
+  "expect": "allow"
+}

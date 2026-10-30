@@ -1,0 +1,26 @@
+{
+  "name": "ai-native-starter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A starter folder for building with Claude Code through the six-stage AI-native loop.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "init": "node tools/init.js",
+    "new": "node tools/new-doc.js",
+    "accept": "node tools/status.js accept",
+    "reject": "node tools/status.js reject",
+    "done": "node tools/status.js done",
+    "close": "node tools/status.js close",
+    "check": "node tools/check.js",
+    "check:strict": "node tools/check.js --strict",
+    "check:docs": "node tools/checks/check-docs.js",
+    "check:evals": "node tools/checks/check-evals.js",
+    "check:secrets": "node tools/checks/check-secrets.js",
+    "build": "node tools/run.js build",
+    "test": "node tools/run.js test",
+    "lint": "node tools/run.js lint",
+    "start": "node tools/run.js run"
+  }
+}

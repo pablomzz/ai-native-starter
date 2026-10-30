@@ -1,0 +1,15 @@
+{
+  "hook": "plan-before-code",
+  "why": "a plan accepted long ago (and never marked Done) must not unlock src/ forever",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "src/timer.js",
+      "content": "x"
+    }
+  },
+  "files": {
+    "docs/plan/260101-study-timer.md": "# Plan: study timer\n\n## Status\nAccepted 200101 by Owner\n"
+  },
+  "expect": "ask"
+}

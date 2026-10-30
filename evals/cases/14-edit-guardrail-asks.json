@@ -1,0 +1,12 @@
+{
+  "hook": "protect-paths",
+  "why": "Claude must ask before editing its own hook settings, so it cannot quietly switch them off",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": ".claude/settings.json",
+      "content": "{}"
+    }
+  },
+  "expect": "ask"
+}

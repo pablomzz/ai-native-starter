@@ -1,0 +1,15 @@
+{
+  "hook": "plan-before-code",
+  "why": "editing src/ with no Accepted plan must ask the owner",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "src/timer.js",
+      "content": "x"
+    }
+  },
+  "files": {
+    "docs/plan/260101-study-timer.md": "# Plan: study timer\n\n## Status\nProposed\n"
+  },
+  "expect": "ask"
+}

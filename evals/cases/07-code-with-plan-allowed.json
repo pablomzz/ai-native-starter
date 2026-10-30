@@ -1,0 +1,15 @@
+{
+  "hook": "plan-before-code",
+  "why": "editing src/ with a recent Accepted plan passes",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "src/timer.js",
+      "content": "x"
+    }
+  },
+  "files": {
+    "docs/plan/260101-study-timer.md": "# Plan: study timer\n\n## Status\nAccepted @TODAY@ by Owner\n"
+  },
+  "expect": "allow"
+}

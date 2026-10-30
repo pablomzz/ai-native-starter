@@ -1,0 +1,11 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a push to a feature branch is routine",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git push -u origin study-timer"
+    }
+  },
+  "expect": "allow"
+}

@@ -1,0 +1,12 @@
+{
+  "hook": "protect-paths",
+  "why": ".env holds secrets and is protected",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": ".env",
+      "content": "X=1"
+    }
+  },
+  "expect": "deny"
+}

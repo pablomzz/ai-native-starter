@@ -1,0 +1,42 @@
+{
+  "projectName": "{{PROJECT_NAME}}",
+  "description": "{{ONE_LINE_DESCRIPTION}}",
+  "owners": [
+    "{{YOUR_NAME}}"
+  ],
+  "timezone": "{{TIMEZONE}}",
+  "defaultBranch": "main",
+  "stack": "{{STACK}}",
+  "commands": {
+    "build": "{{BUILD_COMMAND}}",
+    "test": "{{TEST_COMMAND}}",
+    "lint": "{{LINT_COMMAND}}",
+    "run": "{{RUN_COMMAND}}"
+  },
+  "protectedPaths": [
+    ".env",
+    ".env.*",
+    "*.pem",
+    "*.key"
+  ],
+  "askBeforeEditing": [
+    ".claude/settings.json",
+    ".claude/settings.local.json",
+    "tools/hooks/",
+    "tools/lib.js",
+    "evals/cases/",
+    "project.config.json"
+  ],
+  "planRequiredFor": [
+    "src/"
+  ],
+  "planMaxAgeDays": 14,
+  "askBeforeCommands": [
+    "git push[^;&|]*[\\s:+](main|master)(\\s|$|;|&|\\|)",
+    "git push[^;&|]*\\s(--force|--force-with-lease|-f)(\\s|$)",
+    "gh pr merge",
+    "git reset --hard",
+    "rm -rf",
+    "{{DEPLOY_COMMAND_PATTERN}}"
+  ]
+}

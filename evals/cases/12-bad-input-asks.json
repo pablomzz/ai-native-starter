@@ -1,0 +1,6 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a gate fails closed: unreadable input means ask",
+  "input": "NOT_JSON",
+  "expect": "ask"
+}

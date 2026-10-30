@@ -1,0 +1,14 @@
+{
+  "hook": "ask-before-shipping",
+  "why": "a gate fails closed: if the config cannot be read, the hook asks instead of crashing",
+  "files": {
+    "project.config.json": "{ this is not json"
+  },
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git status"
+    }
+  },
+  "expect": "ask"
+}
