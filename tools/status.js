@@ -50,7 +50,7 @@ let text = fs.readFileSync(file, 'utf8');
 if (action === 'accept') {
   const body = text.replace(/<!--[\s\S]*?-->/g, '');
   const blank = text.split('\n')[0].includes('<short title>') ? '<short title>'
-    : ['<something you can see or test>', '<skill names, or none>'].find((b) => body.includes(b));
+    : ['<something you can see or test>', '<skill names, or none>', '<how long, like two evenings>'].find((b) => body.includes(b));
   if (blank) { console.log(`${file} still has "${blank}" from the template. Fill it in first (Claude can help), then accept it.`); process.exit(1); }
 }
 

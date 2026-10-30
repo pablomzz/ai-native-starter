@@ -17,7 +17,9 @@ What is different when this is done? One or two sentences.
 - Data:
 
 ## Appetite
-How much time is this worth? For example "two evenings". If you run past it, stop and make the idea smaller instead of carrying on.
+<how long, like two evenings>
+
+How much time is this worth? If you run past it, stop and make the idea smaller instead of carrying on.
 
 ## Not doing
 What this will not include, so it stays small.

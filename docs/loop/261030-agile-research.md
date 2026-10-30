@@ -13,7 +13,7 @@ Research on how Scrum, Kanban, XP, Lean and Shape Up interact with AI-native dev
 - The kit already had the intent → spec → plan loop, plan-before-code, protected tests and "one intent, one branch, one pull request".
 
 ## Changed
-- The intent template has **Appetite** and **Not doing**.
+- The intent template has **Appetite** and **Not doing**. `npm run accept` refuses an intent whose Appetite is still blank.
 - "Done when" lines are written as "When …, the page shall …", each one becoming a test written first.
 - "Done when" now includes "I can explain in my own words what changed and why".
 - The plan template:

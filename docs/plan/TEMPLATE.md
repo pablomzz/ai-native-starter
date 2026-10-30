@@ -19,7 +19,7 @@ docs/spec/<yymmdd>-<short-name>.md (or `none: <reason>`)
 - Which step is riskiest?
 
 ## Proof
-The tests that fail before the change and pass after it: one for each "Done when" line in the intent.
+The tests that fail before the change and pass after it: one for each testable "Done when" line in the intent.
 
 ## Tidy
 Clean-up this change needs (duplicate code, unclear names), done in its own commit after the tests pass. Or `none`.
