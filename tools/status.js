@@ -7,19 +7,26 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { readConfig, today, owners, statusOf, setStatus, section } = require('./lib');
+const { today, owners, statusOf, setStatus, section } = require('./lib');
+const { loadConfig } = require('./config');
 
-const [action, file, ...rest] = process.argv.slice(2);
+const [action, rawFile, ...rest] = process.argv.slice(2);
 const usage = () => { console.log('Usage: npm run accept -- docs/intent/<file>.md   (also: reject, done, close)'); process.exit(1); };
-if (!action || !file) usage();
-if (!fs.existsSync(file)) { console.log(`${file} does not exist. Check the name with: ls docs/*/`); process.exit(1); }
+if (!action || !rawFile) usage();
+// Forgive Windows slashes, a leading ./ and a bare file name typed without its folder.
+let file = rawFile.replace(/\\/g, '/').replace(/^\.\//, '');
+if (!fs.existsSync(file) && !file.includes('/')) {
+  const hits = ['intent', 'spec', 'plan', 'incidents', 'loop'].map((k) => `docs/${k}/${file}`).filter((f) => fs.existsSync(f));
+  if (hits.length === 1) file = hits[0];
+}
+if (!fs.existsSync(file)) { console.log(`${rawFile} does not exist. Check the name with: ls docs/*/`); process.exit(1); }
 
 const kind = (file.split(/[\\/]/).slice(-2, -1)[0] || '').replace('incidents', 'incident');
 const allowed = { accept: ['intent', 'spec', 'plan'], reject: ['intent', 'spec'], done: ['plan'], close: ['incident'] };
 if (!allowed[action]) usage();
 if (!allowed[action].includes(kind)) { console.log(`"${action}" works on ${allowed[action].join(', ')} files, and this is a ${kind || 'different'} file.`); process.exit(1); }
 
-const cfg = readConfig();
+const cfg = loadConfig();
 const date = today(cfg.timezone);
 const team = owners(cfg);
 const gitName = (spawnSync('git', ['config', 'user.name'], { encoding: 'utf8' }).stdout || '').trim();
@@ -32,7 +39,8 @@ if (!team.length || !['accept', 'reject'].includes(action)) who = who || team[0]
 if (!who) {
   console.log(`Only an owner can ${action} a document. Owners in project.config.json: ${team.join(', ')}.`);
   if (given) console.log(`"${given}" is not one of them.`);
-  else console.log(`Your git name is "${gitName || '(not set)'}". If you are ${team[0]}, set it with: git config --global user.name "${team[0]}"`);
+  else if (!gitName) console.log(`Git does not know your name yet. If you are ${team[0]}, run: git config --global user.name "${team[0]}"`);
+  else console.log(`Your git name is "${gitName}". If you are ${team[0]}, set it with: git config --global user.name "${team[0]}"`);
   process.exit(1);
 }
 
@@ -56,6 +64,12 @@ if (action === 'accept' && kind !== 'intent') {
     if (!/^Accepted\b/.test(statusOf(fs.readFileSync(ref, 'utf8')) || '')) { console.log(`${ref} is not Accepted yet. Accept it first: npm run accept -- ${ref}`); process.exit(1); }
   }
 }
+
+// Nothing to do when the Status already says so; a plan is only Done after it was Accepted.
+const now = statusOf(text) || '';
+const word = { accept: 'Accepted', reject: 'Rejected', done: 'Done', close: 'Closed' }[action];
+if (now.startsWith(word)) { console.log(`${path.basename(file)} is already "${now}". Nothing changed.`); process.exit(0); }
+if (action === 'done' && !now.startsWith('Accepted')) { console.log(`Only an Accepted plan can be Done. Accept it first: npm run accept -- ${file}`); process.exit(1); }
 
 const reason = rest.join(' ').trim();
 if (action === 'reject' && !reason) { console.log('Say why: npm run reject -- <file> <reason>'); process.exit(1); }

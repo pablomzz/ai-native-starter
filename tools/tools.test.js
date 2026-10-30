@@ -128,6 +128,138 @@ test('marking a plan Done does not need an owner name', () => {
   spawnSync('git', ['config', 'user.name', 'Visitor'], { cwd: dir, env });
   run(dir, ['tools/new-doc.js', 'plan', 'timer']);
   const file = fs.readdirSync(path.join(dir, 'docs', 'plan')).find((f) => f.endsWith('-timer.md'));
+  const full = path.join(dir, 'docs', 'plan', file);
+  fs.writeFileSync(full, fs.readFileSync(full, 'utf8').replace(/^Proposed$/m, 'Accepted 260101 by Maya'));
   const r = run(dir, ['tools/status.js', 'done', `docs/plan/${file}`]);
   assert.equal(r.code, 0, r.out);
+});
+
+// From the 31-person round: see docs/loop/ for who ran into each one.
+test('init finds a time zone from a city typed the way people say it', () => {
+  const a = sandbox(); init(a, { tz: 'Buenos Aires' });
+  const b = sandbox(); init(b, { tz: 'kolkata' });
+  assert.equal(config(a).timezone, 'America/Buenos_Aires');
+  assert.match(config(b).timezone, /^Asia\/(Kolkata|Calcutta)$/);
+});
+
+test('init refuses short codes like EST, which mean different places', () => {
+  const dir = sandbox();
+  const r = init(dir, { tz: 'EST' });
+  assert.match(r.out, /not a time zone name/);
+  assert.notEqual(config(dir).timezone, 'America/Panama');
+});
+
+test('init splits owners written with "and" or semicolons', () => {
+  const a = sandbox(); init(a, { owners: 'Ana and Gus' });
+  const b = sandbox(); init(b, { owners: 'Hana; Omar' });
+  assert.deepEqual(config(a).owners, ['Ana', 'Gus']);
+  assert.deepEqual(config(b).owners, ['Hana', 'Omar']);
+});
+
+test('a second init changes nothing and says how to change an answer', () => {
+  const dir = sandbox();
+  init(dir, { tz: 'Europe/Berlin' });
+  const r = init(dir, { tz: 'Europe/Madrid' });
+  assert.match(r.out, /already set up/);
+  assert.equal(config(dir).timezone, 'Europe/Berlin');
+});
+
+test('init says so when the stack number is not on the menu', () => {
+  const dir = sandbox();
+  const r = init(dir, { stack: '7' });
+  assert.match(r.out, /"7" is not on the list/);
+});
+
+test('new takes "Intents" and explains a kind it does not know', () => {
+  const dir = sandbox();
+  init(dir);
+  assert.match(run(dir, ['tools/new-doc.js', 'Intents', 'idea']).out, /Created docs\/intent\//);
+  assert.match(run(dir, ['tools/new-doc.js', 'idea', 'idea']).out, /"idea" is not a kind of document/);
+});
+
+test('new tells you to close an incident, not accept it', () => {
+  const dir = sandbox();
+  init(dir);
+  assert.match(run(dir, ['tools/new-doc.js', 'incident', 'broke']).out, /npm run close -- docs\/incidents\//);
+});
+
+// A filled-in intent, ready to accept. Returns its path relative to the sandbox.
+function readyIntent(dir, name) {
+  run(dir, ['tools/new-doc.js', 'intent', name]);
+  const rel = `docs/intent/${fs.readdirSync(path.join(dir, 'docs', 'intent')).find((f) => f.endsWith(`-${name}.md`))}`;
+  const full = path.join(dir, rel);
+  fs.writeFileSync(full, fs.readFileSync(full, 'utf8').replace('<short title>', name).replace('<something you can see or test>', 'it works'));
+  return rel;
+}
+
+test('accept finds a file typed with backslashes or without its folder', () => {
+  const dir = sandbox('Nia');
+  init(dir);
+  const a = readyIntent(dir, 'notes');
+  const b = readyIntent(dir, 'budget');
+  assert.equal(run(dir, ['tools/status.js', 'accept', a.replace(/\//g, '\\')]).code, 0);
+  assert.equal(run(dir, ['tools/status.js', 'accept', path.basename(b)]).code, 0);
+});
+
+test('accepting twice changes nothing the second time', () => {
+  const dir = sandbox('Tariq');
+  init(dir);
+  const rel = readyIntent(dir, 'twice');
+  run(dir, ['tools/status.js', 'accept', rel]);
+  const before = fs.readFileSync(path.join(dir, rel), 'utf8');
+  assert.match(run(dir, ['tools/status.js', 'accept', rel]).out, /already "Accepted/);
+  assert.equal(fs.readFileSync(path.join(dir, rel), 'utf8'), before);
+});
+
+test('done refuses a plan that was never accepted', () => {
+  const dir = sandbox('Vic');
+  init(dir);
+  run(dir, ['tools/new-doc.js', 'plan', 'rush']);
+  const file = fs.readdirSync(path.join(dir, 'docs', 'plan')).find((f) => f.endsWith('-rush.md'));
+  const r = run(dir, ['tools/status.js', 'done', `docs/plan/${file}`]);
+  assert.equal(r.code, 1);
+  assert.match(r.out, /Only an Accepted plan can be Done/);
+});
+
+test('a broken project.config.json gets a plain message, not a crash', () => {
+  const dir = sandbox();
+  init(dir);
+  const cfgFile = path.join(dir, 'project.config.json');
+  fs.writeFileSync(cfgFile, fs.readFileSync(cfgFile, 'utf8').replace('"main",', '"main",,'));
+  for (const args of [['tools/new-doc.js', 'intent', 'x'], ['tools/run.js', 'test'], ['tools/check.js']]) {
+    const r = run(dir, args);
+    assert.equal(r.code, 1);
+    assert.match(r.out, /project\.config\.json is broken near line \d+/);
+    assert.doesNotMatch(r.out, /\bat .+:\d+:\d+/);
+  }
+});
+
+// From the review of the 31-person round.
+test('a comma before ] in project.config.json still gets its line number', () => {
+  const dir = sandbox();
+  init(dir, { owners: 'Ana' });
+  const cfgFile = path.join(dir, 'project.config.json');
+  fs.writeFileSync(cfgFile, fs.readFileSync(cfgFile, 'utf8').replace('"Ana"', '"Ana",'));
+  assert.match(run(dir, ['tools/run.js', 'test']).out, /broken near line \d+/);
+});
+
+test('init keeps a name with "y" in it whole, and shows the owners it understood', () => {
+  const dir = sandbox();
+  const r = init(dir, { owners: 'José Ortega y Gasset, Ana' });
+  assert.deepEqual(config(dir).owners, ['José Ortega y Gasset', 'Ana']);
+  assert.match(r.out, /Owners: "José Ortega y Gasset", "Ana"/);
+});
+
+test('init still knows one-word zone names like Japan', () => {
+  const dir = sandbox();
+  init(dir, { tz: 'Japan' });
+  assert.equal(config(dir).timezone, 'Asia/Tokyo');
+});
+
+test('new refuses odd kinds like "constructor" without crashing', () => {
+  const dir = sandbox();
+  init(dir);
+  const r = run(dir, ['tools/new-doc.js', 'constructor', 'x']);
+  assert.equal(r.code, 1);
+  assert.match(r.out, /is not a kind of document/);
 });

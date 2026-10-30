@@ -1,12 +1,14 @@
 // npm run check: the feedback loop for the process itself.
 // --strict makes unfilled placeholders a failure.
 'use strict';
+const { loadConfig } = require('./config');
 const { checkDocs } = require('./checks/check-docs');
 const { checkEvals } = require('./checks/check-evals');
 const { checkPlaceholders } = require('./checks/check-placeholders');
 const { checkSecrets } = require('./checks/check-secrets');
 
 const root = process.cwd();
+loadConfig(root); // a broken config stops here with a plain message, before the hooks' evals trip over it
 const strict = process.argv.includes('--strict');
 let failed = 0;
 

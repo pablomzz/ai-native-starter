@@ -1,0 +1,12 @@
+{
+  "hook": "block-secrets",
+  "why": "the twin of 22-24: names that look a bit like keys are ordinary beginner code",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "src/app.js",
+      "content": "if (event.key === 'ArrowLeft') move(-1);\nconst key = 'studyPlannerSessionsV2';\nlocalStorage.setItem(key = 'MyTodoAppStorage2024v1', data);\nconst settings = { key: 'user_Profile_Settings_V2' };\nconst row = '<li key=\"item-Abc123-def456-GHI789\" data-key=\"btnSaveSession2Primary\">';\nconst png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';\nconst stripePublic = 'pk_live_51HqLyjWDarjtT1zdp7dc';\nconst skillsTested = 'skills-testing-guide-2026';"
+    }
+  },
+  "expect": "allow"
+}
