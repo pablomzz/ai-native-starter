@@ -317,3 +317,16 @@ test('check-integrity does not count a commented-out CI step', () => {
   fs.writeFileSync(path.join(dir, '.github', 'workflows', 'ci.yml'), '      - run: npm run check\n      - run: echo skip # npm run test\n');
   assert.match(checkIntegrity(dir).join('\n'), /CI no longer runs "npm run test"/);
 });
+
+// From the agile research: one thing in progress at a time.
+test('check reminds you when two plans are in progress at once', () => {
+  const { checkDocs } = require('./checks/check-docs');
+  const dir = sandbox();
+  init(dir);
+  for (const n of ['one', 'two']) {
+    run(dir, ['tools/new-doc.js', 'plan', n]);
+    const f = path.join(dir, 'docs', 'plan', fs.readdirSync(path.join(dir, 'docs', 'plan')).find((x) => x.endsWith(`-${n}.md`)));
+    fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/^Proposed$/m, 'Accepted 260101 by Sam').replace(/docs\/intent\/\S+/, 'none: test').replace(/docs\/spec\/\S+/, 'none: test'));
+  }
+  assert.match(checkDocs(dir).warnings.join('\n'), /2 plans are in progress at once/);
+});

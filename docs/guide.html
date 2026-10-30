@@ -695,6 +695,17 @@ People think in hours. Now an intent: docs/intent/251110-hours-and-minutes.md</c
       </tbody>
     </table></div>
 
+    <h3>Your week</h3>
+    <p>The loop has no sprints, stand-ups or story points. When Claude writes the code, those measure the wrong thing. What still matters is a short rhythm and one thing at a time:</p>
+    <ul>
+      <li><strong>One thing in progress.</strong> Finish and merge one plan before you start the next. <code>npm run check</code> reminds you when two are open.</li>
+      <li><strong>An appetite, not an estimate.</strong> Each intent says how much time the idea is worth. If you run past it, stop and make the idea smaller.</li>
+      <li><strong>A weekly demo.</strong> Show what works to one real person, and write down what they said.</li>
+      <li><strong>A 15-minute retro.</strong> <code>npm run new -- loop week-1</code>: what went well, what was hard, one thing to change.</li>
+      <li><strong>Done means you can explain it.</strong> Before you merge, say in your own words what changed and why. Code that grows faster than your understanding is hard to fix later.</li>
+      <li><strong>Tiny fixes travel light.</strong> No intent or spec: a plan with <code>none: &lt;reason&gt;</code>, a failing test, then the fix.</li>
+    </ul>
+
     <h3>Building with a friend</h3>
     <ul>
       <li>When <code>npm run init</code> asks for your name, list every owner: <code>Ana, Bruno</code>. Any owner can accept a document; <code>npm run accept</code> uses your git name.</li>

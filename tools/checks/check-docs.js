@@ -70,6 +70,10 @@ function checkDocs(root) {
     return `${rel}: the ${kind} ${ref} does not exist${same.length ? `. Did you mean ${same[same.length - 1]}?` : ''}`;
   };
 
+  // One thing in progress: more than one Accepted plan that is not Done means work is piling up.
+  const open = Object.entries(docs.plan).filter(([, t]) => isAccepted(t)).map(([r]) => r);
+  if (open.length > 1) warnings.push(`${open.length} plans are in progress at once (${open.join(', ')}). Finish one first: npm run done -- <plan>`);
+
   for (const [rel, text] of Object.entries(docs.spec)) {
     const l = linkTo(text, 'Intent');
     if (!l.ref) { problems.push(`${rel}: under "## Intent", write the intent's path, like docs/intent/${now}-my-idea.md`); continue; }

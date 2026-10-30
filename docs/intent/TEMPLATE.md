@@ -16,6 +16,13 @@ What is different when this is done? One or two sentences.
 - Screens or features:
 - Data:
 
+## Appetite
+How much time is this worth? For example "two evenings". If you run past it, stop and make the idea smaller instead of carrying on.
+
+## Not doing
+What this will not include, so it stays small.
+-
+
 ## Constraints
 What must stay true? (Privacy, cost, time, devices.) Write `none` if none.
 
@@ -23,7 +30,9 @@ What must stay true? (Privacy, cost, time, devices.) Write `none` if none.
 -
 
 ## Done when
+Write each line as "When <something happens>, the page shall <what you see>". Each line becomes one test, written first.
 - [ ] <something you can see or test>
+- [ ] I can explain in my own words what changed and why.
 
 ## Status
 Proposed
