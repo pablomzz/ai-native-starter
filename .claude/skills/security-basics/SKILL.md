@@ -10,6 +10,6 @@ description: Use whenever code handles passwords, tokens, personal data, user in
 4. **Dependencies**: add one only when the spec needs it. Prefer well-known packages. Say why in the plan.
 5. **Access**: a user can only read and change their own data.
 6. **Workflows**: GitHub Actions use the least permissions they need (`permissions: contents: read`).
-7. {{ADD_A_RULE_FOR_YOUR_DATA}}
+7. **Data stays on the device**: the page keeps data in the browser (such as localStorage). Sending data to a server needs its own intent first.
 
 This skill is advice. The hooks in `tools/hooks/` enforce rules 1 and part of 6 so they hold even when this skill is skipped.

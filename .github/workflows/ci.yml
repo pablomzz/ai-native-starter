@@ -22,5 +22,5 @@ jobs:
         run: npm run test
       - name: Build
         run: npm run build
-      # {{ADD_A_DEPLOY_JOB_WHEN_READY}}: deploy only from the main branch, after these steps pass,
+      # No deploy job yet. When you add one: deploy only from the main branch, after these steps pass,
       # and keep the owner's approval (for example a GitHub "environment" with required reviewers).

@@ -27,7 +27,7 @@ Owners: pablomzz. Dates use Etc/GMT+3 time, written as `yymmdd`.
 - Never put a password, token or key in a file. Read secrets from environment variables.
 - Write docs in plain language (skill `plain-language`). Explain new words to the owner: they may be new to coding.
 - Never change a document's Status yourself unless an owner asks; suggest the `npm run accept` command instead.
-- {{ADD_YOUR_OWN_CONVENTION}}
+- Use `textContent`, never `innerHTML`, to put user text on the page.
 
 ## Architecture
 - `src/`: the product code. index.html is the page; each .js file holds functions that tests in tests/ check.

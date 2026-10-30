@@ -10,6 +10,6 @@ description: Use when writing or editing any text people read - docs, intent, sp
 4. Use "you" for the reader. Use active voice: "Claude runs the tests", not "the tests are run".
 5. Lists for steps; numbered when order matters.
 6. No idioms or slang; the reader may not share your language.
-7. {{ADD_A_HOUSE_STYLE_RULE}}
+7. Write dates as `yymmdd` in file names and as "29 October 2026" in text people read.
 
 Before you finish, re-read the text and split any sentence over 25 words.
