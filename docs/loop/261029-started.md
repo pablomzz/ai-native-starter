@@ -4,7 +4,7 @@
 Set up the folder with npm run init (stack: web).
 
 ## Saw
-(Write what surprised you during setup.)
+Setup worked first time: npm run check passed and the starter test passed.
 
 ## Changed
 Nothing yet: a note only.
