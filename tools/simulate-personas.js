@@ -15,7 +15,15 @@ if (!BASE) {
   const files = spawnSync('git', ['ls-files', '-co', '--exclude-standard'], { encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
   for (const f of files) { if (!fs.existsSync(f)) continue; fs.mkdirSync(path.join(BASE, path.dirname(f)), { recursive: true }); fs.copyFileSync(f, path.join(BASE, f)); }
 }
-OUT = OUT || fs.mkdtempSync(path.join(os.tmpdir(), 'sim-runs-'));
+const madeBase = !process.argv[2];
+const madeOut = !OUT;
+OUT = path.resolve(OUT || fs.mkdtempSync(path.join(os.tmpdir(), 'sim-runs-')));
+// The simulation deletes and rewrites folders inside OUT, so never let OUT be inside this project.
+if (!path.relative(process.cwd(), OUT).startsWith('..') && path.isAbsolute(path.relative(process.cwd(), OUT)) === false) {
+  console.log(`Refusing to simulate inside this project (${OUT}). Give a folder outside it, or no folder at all.`);
+  process.exit(1);
+}
+process.on('exit', () => { if (madeOut) fs.rmSync(OUT, { recursive: true, force: true }); if (madeBase) fs.rmSync(BASE, { recursive: true, force: true }); });
 const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => k !== 'CLAUDE_PROJECT_DIR' && !k.startsWith('GIT_')));
 env.HOME = path.join(OUT, '_home'); fs.mkdirSync(env.HOME, { recursive: true });
 
@@ -29,7 +37,6 @@ function box(name) {
   return dir;
 }
 
-// Which hooks run for a tool, as in .claude/settings.json.
 // Which hooks run for a tool: read from the copy's own .claude/settings.json, as Claude Code would.
 function hooksFor(dir, tool) {
   let cfg = {}; try { cfg = JSON.parse(fs.readFileSync(path.join(dir, '.claude/settings.json'), 'utf8')); } catch { return []; }

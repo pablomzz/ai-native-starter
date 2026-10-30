@@ -19,9 +19,17 @@ runHook(HOOK, (input) => {
 
   if (tool === 'Bash') {
     const cmd = String(ti.command || '');
-    if (/--no-verify\b/.test(cmd)) decide(HOOK, 'ask', 'This skips the checks (--no-verify). A failing check is telling you something. Say yes only if you know why it fails.');
-    const del = /(^|[;&|]\s*)(rm|git\s+rm|del|mv)\s([^;&|]*)/.exec(cmd);
-    if (del && del[3].split(/\s+/).some((a) => a && !a.startsWith('-') && TEST_FILE.test(a.replace(/\\/g, '/')))) decide(HOOK, 'ask', `Deleting a test can hide a bug. ${WHY_TEST}`);
+    // Every part of a chained command (a; b && c | d) is checked, not just the first.
+    for (const part of cmd.split(/;|&&|\|\||\|/).map((p) => p.trim())) {
+      if (/^git\s+(commit|push)\b/.test(part) && /\s(--no-verify|-n)(\s|$)/.test(part)) decide(HOOK, 'ask', 'This skips the checks (--no-verify). A failing check is telling you something. Say yes only if you know why it fails.');
+      const m = /^(rm|git\s+rm|del|mv)\s+(.*)$/.exec(part);
+      if (!m) continue;
+      const args = m[2].split(/\s+/).filter((a) => a && !a.startsWith('-')).map((a) => a.replace(/\\/g, '/').replace(/^["']|["']$/g, ''));
+      const isTest = (a) => TEST_FILE.test(a) || /^(\.\/)?(tests?|__tests__)\/?$/.test(a);
+      // A rename that keeps it a test (mv tests/a.test.js tests/b.test.js) is fine; moving it away is not.
+      const removed = m[1] === 'mv' ? (args.length > 1 && !isTest(args[args.length - 1]) ? args.slice(0, -1) : []) : args;
+      if (removed.some(isTest)) decide(HOOK, 'ask', `Deleting a test can hide a bug. ${WHY_TEST}`);
+    }
     if (/npm\s+pkg\s+(set|delete)\s+scripts\.(test|check)\b/.test(cmd)) decide(HOOK, 'ask', 'This changes what "npm run test" or "npm run check" runs, so they could pass without checking. Say yes only if you asked for it.');
     return decide(HOOK, 'allow', 'no check is weakened');
   }
@@ -70,6 +78,12 @@ runHook(HOOK, (input) => {
       gone = lost(old, now);
     }
   }
+  const SKIP = /\b(test|it|describe)\.(skip|only|todo)\s*\(|\{\s*skip\s*:\s*true|@pytest\.mark\.(skip|xfail)|\bxit\s*\(/;
+  const added = tool === 'Write' ? String(ti.content || '') : (Array.isArray(ti.edits) ? ti.edits : [ti]).map((e) => String(e.new_string || '')).join('\n');
+  let before = '';
+  if (tool === 'Write') { try { before = fs.readFileSync(path.join(ROOT, rel), 'utf8'); } catch { /* a new file */ } }
+  else before = (Array.isArray(ti.edits) ? ti.edits : [ti]).map((e) => String(e.old_string || '')).join('\n');
+  if (SKIP.test(added) && !SKIP.test(before)) decide(HOOK, 'ask', `Skipping a test can hide a bug. ${WHY_TEST} (${rel})`);
   if (gone.length) decide(HOOK, 'ask', `Changing a test so it passes can hide a bug. ${WHY_TEST} (${rel}: ${gone[0].slice(0, 60)})`);
   decide(HOOK, 'allow', 'test change keeps every existing check');
 });

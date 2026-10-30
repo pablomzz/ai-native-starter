@@ -288,3 +288,32 @@ test('check-integrity flags a fake test script, a CI without tests, and a switch
   assert.match(p, /no longer runs "npm run test"/);
   assert.match(p, /no longer switches on tools\/hooks\/guard-checks\.js/);
 });
+
+// From the review of the protopersona round.
+test('check-integrity flags a deleted settings file and a test command that runs nothing', () => {
+  const { checkIntegrity } = require('./checks/check-integrity');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'integrity-'));
+  made.push(dir);
+  fs.mkdirSync(path.join(dir, '.github', 'workflows'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'tools', 'hooks'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'tools', 'hooks', 'guard-checks.js'), '');
+  fs.writeFileSync(path.join(dir, 'tools', 'hooks', 'helper.test.js'), '');
+  fs.writeFileSync(path.join(dir, '.github', 'workflows', 'ci.yaml'), '      - run: npm run check\n      - run: npm run test\n');
+  fs.writeFileSync(path.join(dir, 'project.config.json'), JSON.stringify({ stack: 'web', commands: { test: 'echo ok' } }));
+  const p = checkIntegrity(dir).join('\n');
+  assert.match(p, /\.claude\/settings\.json is missing/);
+  assert.match(p, /the test command is "echo ok"/);
+  assert.doesNotMatch(p, /CI no longer runs/);
+  assert.doesNotMatch(p, /helper\.test\.js/);
+  fs.writeFileSync(path.join(dir, 'project.config.json'), JSON.stringify({ stack: 'other', commands: { test: 'echo "no tests yet"' } }));
+  assert.doesNotMatch(checkIntegrity(dir).join('\n'), /test command/);
+});
+
+test('check-integrity does not count a commented-out CI step', () => {
+  const { checkIntegrity } = require('./checks/check-integrity');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'integrity-'));
+  made.push(dir);
+  fs.mkdirSync(path.join(dir, '.github', 'workflows'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.github', 'workflows', 'ci.yml'), '      - run: npm run check\n      - run: echo skip # npm run test\n');
+  assert.match(checkIntegrity(dir).join('\n'), /CI no longer runs "npm run test"/);
+});

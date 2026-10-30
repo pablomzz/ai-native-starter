@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "git commit -n is the short form of --no-verify and must ask",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git commit -n -m \"wip\""
+    }
+  },
+  "expect": "ask"
+}

@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "a test deleted later in a chained command must still ask (found in review)",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "rm notes.txt; rm tests/greeting.test.js"
+    }
+  },
+  "expect": "ask"
+}
