@@ -29,6 +29,13 @@ Owners: pablomzz. Dates use Etc/GMT+3 time, written as `yymmdd`.
 - Never change a document's Status yourself unless an owner asks; suggest the `npm run accept` command instead.
 - Use `textContent`, never `innerHTML`, to put user text on the page.
 
+## Proof, not promises (the owner may be new and may say yes to everything)
+- Before building, say the plan in three short steps. After a change, say in up to three plain sentences what changed, why, and how you checked it.
+- Never say "tests pass" unless you ran them in this turn. Show the command and its last lines.
+- When a test fails, fix the code. Change a test only if the test itself was wrong, and say so plainly first.
+- Before adding a package, say what it does and check it exists (`npm view <name>` or `pip index versions <name>`).
+- If the owner seems lost, or pastes the same error twice, stop and use the `im-lost` skill.
+
 ## Architecture
 - `src/`: the product code. index.html is the page; each .js file holds functions that tests in tests/ check.
 - `tests/`: the tests for `src/`.

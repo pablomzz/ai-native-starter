@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "the twin of 30: deleting an ordinary file is not a check being weakened",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "rm src/old-draft.js"
+    }
+  },
+  "expect": "allow"
+}

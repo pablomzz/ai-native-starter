@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "committing with --no-verify after a check failed must ask the owner",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git commit -am \"fix\" --no-verify"
+    }
+  },
+  "expect": "ask"
+}

@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "deleting a failing test file must ask the owner",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "rm tests/greeting.test.js"
+    }
+  },
+  "expect": "ask"
+}

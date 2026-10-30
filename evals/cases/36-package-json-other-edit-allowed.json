@@ -1,0 +1,13 @@
+{
+  "hook": "guard-checks",
+  "why": "the twins of 34 and 35: a package.json change that leaves the checks alone is allowed",
+  "input": {
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "package.json",
+      "old_string": "\"version\": \"0.1.0\"",
+      "new_string": "\"version\": \"0.2.0\""
+    }
+  },
+  "expect": "allow"
+}

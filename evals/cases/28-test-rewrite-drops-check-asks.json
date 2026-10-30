@@ -1,0 +1,15 @@
+{
+  "hook": "guard-checks",
+  "why": "rewriting a test file without one of its checks must ask the owner",
+  "files": {
+    "tests/greeting.test.js": "const { test } = require('node:test');\nconst assert = require('node:assert');\nconst { greeting } = require('../src/greeting');\n\ntest('afternoon', () => {\n  assert.equal(greeting(15), 'Good afternoon');\n});\n"
+  },
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "tests/greeting.test.js",
+      "content": "const { test } = require('node:test');\ntest('afternoon', () => {});\n"
+    }
+  },
+  "expect": "ask"
+}

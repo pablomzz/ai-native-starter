@@ -6,6 +6,7 @@ const { checkDocs } = require('./checks/check-docs');
 const { checkEvals } = require('./checks/check-evals');
 const { checkPlaceholders } = require('./checks/check-placeholders');
 const { checkSecrets } = require('./checks/check-secrets');
+const { checkIntegrity } = require('./checks/check-integrity');
 
 const root = process.cwd();
 loadConfig(root); // a broken config stops here with a plain message, before the hooks' evals trip over it
@@ -27,6 +28,11 @@ const sec = checkSecrets(root);
 sec.forEach((p) => console.log('  ' + p));
 console.log(sec.length ? `✗ secrets: ${sec.length} found` : '✓ secrets: none found');
 failed += sec.length ? 1 : 0;
+
+const integ = checkIntegrity(root);
+integ.forEach((p) => console.log('  ' + p));
+console.log(integ.length ? `✗ checks still check: ${integ.length} problem(s)` : '✓ checks still check: tests, CI and hooks are in place');
+failed += integ.length ? 1 : 0;
 
 const left = checkPlaceholders(root);
 const names = [...new Set(left.map((p) => p.name))];

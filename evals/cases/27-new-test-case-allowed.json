@@ -1,0 +1,13 @@
+{
+  "hook": "guard-checks",
+  "why": "the twin of 26: adding a new test keeps every old check, so it is allowed",
+  "input": {
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "tests/greeting.test.js",
+      "old_string": "test('afternoon', () => {",
+      "new_string": "test('morning', () => {\n  assert.equal(greeting(9), 'Good morning');\n});\n\ntest('afternoon', () => {"
+    }
+  },
+  "expect": "allow"
+}

@@ -500,6 +500,7 @@ Accepted 251102 by Sam</code></pre></div>
       <li>Switch to plan mode and give Claude the prompt below.</li>
       <li>Question the plan: what could this break, which step is riskiest, what did you choose not to do?</li>
       <li>Keep going until someone who never saw the chat could build from the plan alone.</li>
+      <li>Start a fresh Claude Code session for each stage (intent, spec, plan, build). In a very long session, Claude follows your rules less well. The files carry everything the next session needs.</li>
       <li>Run <code>npm run new -- plan weekly-minutes</code>, ask Claude to put the plan in it, then <code>npm run accept -- docs/plan/&lt;file&gt;</code> and commit.</li>
       <li>Leave plan mode and say "Build it, following the plan". If the work drifts from the plan, update the plan. After the merge, run <code>npm run done -- docs/plan/&lt;file&gt;</code>: an accepted plan unlocks <code>src/</code> for 14 days, so close it when the work is finished.</li>
     </ol>
@@ -557,7 +558,8 @@ Accepted 251102 by Sam</code></pre></div>
       <li>Ask for the tests first, and watch them fail: that proves they test something.</li>
       <li>Let Claude build until they pass.</li>
       <li>Before you call it done, ask the <code>verifier</code> agent to run every check.</li>
-      <li>Never let anyone, including Claude, change a test just to make it pass. Fix the code instead.</li>
+      <li>Never let anyone, including Claude, change a test just to make it pass. Fix the code instead. The <code>guard-checks</code> hook asks you before Claude changes what a test checks, deletes a test, or edits CI.</li>
+      <li>Do not take "all tests pass" on trust. Run <code>npm run test</code> yourself and read the last lines. Research finds that people working with AI feel surer of their code than they should.</li>
     </ol>
     <div class="code prompt has-copy"><span class="tag">Try it</span><button class="copy" type="button">Copy</button><pre><code>Use the verifier agent to run lint, tests, build and npm run check. Show me the results as a table. If anything fails, fix the code, not the test, and run it again.</code></pre></div>
     <div class="code"><span class="tag">What it looks like: one test</span><pre><code>test('Sunday 23:30 counts in the week that started the Monday before', () =&gt; {
@@ -704,6 +706,8 @@ People think in hours. Now an intent: docs/intent/251110-hours-and-minutes.md</c
     <h3>When something goes wrong</h3>
     <div class="faq">
       <details><summary>"npm: command not found"</summary><p>Node.js is not installed, or your terminal opened before it was. Install the LTS version from nodejs.org, then close the terminal and open a new one.</p></details>
+      <details><summary>Claude asks before changing a test, CI or <code>package.json</code></summary><p>That is the <code>guard-checks</code> hook. Changing what a test expects can hide a bug instead of fixing it. Say no, and ask Claude why the test fails. Say yes only if the test itself was wrong. <code>npm run check</code> also fails if the test script, CI or a hook was switched off.</p></details>
+      <details><summary>I'm lost and don't know what Claude is doing</summary><p>Type "I'm lost". The <code>im-lost</code> skill stops the work and shows the goal, the plan, what changed, whether the checks pass, and the one next step.</p></details>
       <details><summary>Claude keeps asking before it edits my code</summary><p>That is the <code>plan-before-code</code> hook. It asks unless a plan in <code>docs/plan/</code> was accepted in the last 14 days. Write and accept a plan for this change, or say yes for a tiny fix.</p></details>
       <details><summary>Claude asks before editing <code>.claude/settings.json</code> or the hooks</summary><p>That is on purpose. Those files are your guardrails. Say yes only if you asked for that change and understand it. To change a rule yourself, edit <code>project.config.json</code> by hand.</p></details>
       <details><summary>The check says a Status line "is not valid"</summary><p>Do not type Status lines by hand. Run the command the message suggests, such as <code>npm run accept -- docs/intent/&lt;file&gt;</code>. It writes the exact format with today's date.</p></details>
