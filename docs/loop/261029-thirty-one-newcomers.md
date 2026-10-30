@@ -36,7 +36,7 @@ Nineteen people got through cleanly or met a clear message. Twelve hit a problem
 11. After `npm run new -- incident`, the hint said "accept". Incidents are closed.
 12. Abe, with no git name, was told "If you are Owner, set your name to Owner".
 
-Not fixed here: Zoe's key (`sk-live-...`) was not caught, and neither would a Stripe `sk_live_` or Google `AIza` key be. The key patterns live in `tools/lib.js`, a guardrail file, so an owner decides that change.
+Zoe's key (`sk-live-...`) was not caught, and neither would a Stripe `sk_live_` or Google `AIza` key be. The key patterns live in `tools/lib.js`, a guardrail file, so the owner was asked first and said yes.
 
 ## Changed
 - `npm run init` finds cities ("Buenos Aires", "são paulo", "kolkata") and refuses short codes like EST. It splits owners on commas, semicolons, "and" and "&", then shows the list it understood. It does not split on the Spanish "y", because that breaks names like "Ortega y Gasset". It re-asks for a stack number not on the menu, or says which one it used. It says how to change answers when the project is already set up. It suggests setting a git name when there is none.
@@ -45,7 +45,7 @@ Not fixed here: Zoe's key (`sk-live-...`) was not caught, and neither would a St
 - New `tools/config.js`: a broken `project.config.json` gets a plain message with the line number. This covers check, test, start, lint, build, new and accept.
 - `tools/tools.test.js` has 15 new tests: 11 for the fixes above, which all failed on the tools before this change, and 4 for what the review found.
 - `docs/guide.html` explains the broken-config message, cities as time zones, and that init runs once.
+- With the owner's yes: `tools/lib.js` now knows Stripe and Google keys, and a `key = "..."` that mixes capitals, small letters and digits. Names like `key: "ArrowLeft"` or a storage name stay allowed. Four new guardrail evals (22 to 25) prove both sides.
 
 ## Open
-- Secret patterns for Stripe and Google keys, and for a plain `key = "..."`, need an owner's yes, because they live in `tools/lib.js`.
 - Still nobody on real Windows. Paths are handled, but Git Bash itself is untested.
