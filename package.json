@@ -8,6 +8,7 @@
   },
   "scripts": {
     "init": "node tools/init.js",
+    "guide": "node tools/open.js docs/guide.html",
     "new": "node tools/new-doc.js",
     "accept": "node tools/status.js accept",
     "reject": "node tools/status.js reject",

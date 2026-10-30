@@ -11,7 +11,7 @@ This project starts from the **AI-native starter**: a folder that sets up a six-
 4. Make your first commit: `git init -b main && git add . && git commit -m "chore: start from the AI-native starter"`.
 5. Open Claude Code here (`claude`) and say: "Read CLAUDE.md and help me write my first intent."
 
-The step-by-step guide explains every step for a first-timer, with a worked example (a study-planner app) in `examples/study-planner/`.
+The step-by-step guide (`docs/guide.html`, open it with `npm run guide`) explains every step for a first-timer, with a worked example (a study-planner app) in `examples/study-planner/`.
 
 ## What is in the folder
 | Path | What it is |
@@ -22,6 +22,7 @@ The step-by-step guide explains every step for a first-timer, with a worked exam
 | `docs/intent/`, `docs/spec/`, `docs/plan/` | The chain from idea to code. Each folder has a `TEMPLATE.md`. |
 | `docs/incidents/` | What broke, and what now stops it happening again. |
 | `docs/loop/` | One file per lesson learned. |
+| `docs/guide.html` | The step-by-step guide for first-timers. Open it with `npm run guide`. |
 | `.claude/agents/` | Helpers: `verifier`, `reviewer`, `researcher`. |
 | `.claude/skills/` | Rules Claude applies: `plain-language`, `security-basics`, `write-intent`. |
 | `.claude/settings.json` | Hooks that block secrets, guard files and ask before shipping. |
@@ -34,6 +35,7 @@ The step-by-step guide explains every step for a first-timer, with a worked exam
 | Command | What it does |
 |---|---|
 | `npm run init` | Fill in the placeholders and add starter code. Run it once. |
+| `npm run guide` | Open the first-timer's guide in your browser. |
 | `npm run new -- intent <name>` | Copy a template with today's date. Also `spec`, `plan`, `incident`, `loop`. A spec or plan links the intent of the same name. |
 | `npm run accept -- <file>` | Set Status to "Accepted <date> by <you>". Also `reject`, `done` (plans) and `close` (incidents). |
 | `npm run start` / `test` / `lint` / `build` | Run your project's commands from `project.config.json`. |
