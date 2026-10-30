@@ -39,11 +39,11 @@ Nineteen people got through cleanly or met a clear message. Twelve hit a problem
 Not fixed here: Zoe's key (`sk-live-...`) was not caught, and neither would a Stripe `sk_live_` or Google `AIza` key be. The key patterns live in `tools/lib.js`, a guardrail file, so an owner decides that change.
 
 ## Changed
-- `npm run init` finds cities ("Buenos Aires", "são paulo", "kolkata") and refuses short codes like EST. It splits owners on commas, semicolons, "and", "&" and "y". It re-asks for a stack number not on the menu, or says which one it used. It says how to change answers when the project is already set up. It suggests setting a git name when there is none.
+- `npm run init` finds cities ("Buenos Aires", "são paulo", "kolkata") and refuses short codes like EST. It splits owners on commas, semicolons, "and" and "&", then shows the list it understood. It does not split on the Spanish "y", because that breaks names like "Ortega y Gasset". It re-asks for a stack number not on the menu, or says which one it used. It says how to change answers when the project is already set up. It suggests setting a git name when there is none.
 - `npm run new` takes any capitals and plurals ("Intents", "incidents"), and names the kind it does not know. It explains that the short name needs English letters while the text can be in any language. The incident hint now says to close it.
 - `npm run accept`, `reject`, `done` and `close` take Windows paths and bare file names. They do nothing when the Status already says so. Done needs an Accepted plan. With no git name, the message says so plainly.
 - New `tools/config.js`: a broken `project.config.json` gets a plain message with the line number. This covers check, test, start, lint, build, new and accept.
-- `tools/tools.test.js` has 11 new tests, one per fix. All 11 failed on the tools before this change.
+- `tools/tools.test.js` has 15 new tests: 11 for the fixes above, which all failed on the tools before this change, and 4 for what the review found.
 - `docs/guide.html` explains the broken-config message, cities as time zones, and that init runs once.
 
 ## Open

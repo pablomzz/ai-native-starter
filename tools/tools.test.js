@@ -233,3 +233,33 @@ test('a broken project.config.json gets a plain message, not a crash', () => {
     assert.doesNotMatch(r.out, /\bat .+:\d+:\d+/);
   }
 });
+
+// From the review of the 31-person round.
+test('a comma before ] in project.config.json still gets its line number', () => {
+  const dir = sandbox();
+  init(dir, { owners: 'Ana' });
+  const cfgFile = path.join(dir, 'project.config.json');
+  fs.writeFileSync(cfgFile, fs.readFileSync(cfgFile, 'utf8').replace('"Ana"', '"Ana",'));
+  assert.match(run(dir, ['tools/run.js', 'test']).out, /broken near line \d+/);
+});
+
+test('init keeps a name with "y" in it whole, and shows the owners it understood', () => {
+  const dir = sandbox();
+  const r = init(dir, { owners: 'José Ortega y Gasset, Ana' });
+  assert.deepEqual(config(dir).owners, ['José Ortega y Gasset', 'Ana']);
+  assert.match(r.out, /Owners: "José Ortega y Gasset", "Ana"/);
+});
+
+test('init still knows one-word zone names like Japan', () => {
+  const dir = sandbox();
+  init(dir, { tz: 'Japan' });
+  assert.equal(config(dir).timezone, 'Asia/Tokyo');
+});
+
+test('new refuses odd kinds like "constructor" without crashing', () => {
+  const dir = sandbox();
+  init(dir);
+  const r = run(dir, ['tools/new-doc.js', 'constructor', 'x']);
+  assert.equal(r.code, 1);
+  assert.match(r.out, /is not a kind of document/);
+});

@@ -10,14 +10,15 @@ const KINDS = { intent: 'intent', spec: 'spec', plan: 'plan', incident: 'inciden
 const [rawKind = '', rawName] = process.argv.slice(2);
 // "Intent", "intents" and "incidents" all mean what they say.
 const kind = rawKind.toLowerCase().replace(/s$/, '');
-if (!KINDS[kind] || !rawName) {
-  if (rawKind && !KINDS[kind]) console.log(`"${rawKind}" is not a kind of document. Use one of: ${Object.keys(KINDS).join(', ')}.`);
+const known = Object.hasOwn(KINDS, kind);
+if (!known || !rawName) {
+  if (rawKind && !known) console.log(`"${rawKind}" is not a kind of document. Use one of: ${Object.keys(KINDS).join(', ')}.`);
   console.log('Usage: npm run new -- <intent|spec|plan|incident|loop> <short-name>');
   console.log('Example: npm run new -- intent study-timer');
   process.exit(1);
 }
 // Forgive the common slips: spaces, capitals, accents, a date or ".md" typed in.
-const name = rawName.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\.md$/, '').replace(/['’]/g, '').replace(/^\d{6}-/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const name = rawName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\.md$/, '').replace(/['’]/g, '').replace(/^\d{6}-/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 if (!name) {
   console.log('Use English letters (a to z), numbers and dashes for the short name, like "study-timer".');
   console.log('It becomes the file name. The title and text inside the file can be in any language.');

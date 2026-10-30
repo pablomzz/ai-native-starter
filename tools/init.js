@@ -32,7 +32,7 @@ function toTimeZone(input) {
     for (const region of ['America', 'Europe', 'Asia', 'Africa', 'Australia', 'Pacific', 'Atlantic', 'Indian']) {
       try { new Intl.DateTimeFormat('en-GB', { timeZone: `${region}/${titled}` }); return `${region}/${titled}`; } catch { /* next */ }
     }
-    if (/^[a-z]{2,5}\d*([a-z]{2,4})?$/i.test(s)) return null;
+    if (/^[a-z]{2,4}$/i.test(s) || /^[A-Z]{2,5}\d*[A-Z]{0,4}$/.test(s)) return null;
   }
   const name = off ? (Number(off[2]) === 0 ? 'UTC' : `Etc/GMT${off[1] === '+' ? '-' : '+'}${Number(off[2])}`) : s;
   let real;
@@ -133,8 +133,9 @@ function copyDir(from, to) {
   if (ask.close) ask.close();
 
   A.START_DATE = today(A.TIMEZONE);
-  const ownerList = A.YOUR_NAME.split(/\s*(?:[,;&]|\band\b|\by\b)\s*/i).map((s) => s.trim()).filter(Boolean);
+  const ownerList = A.YOUR_NAME.split(/\s*[,;&]\s*|\s+and\s+/i).map((s) => s.trim()).filter(Boolean);
   A.YOUR_NAME = ownerList.join(', ');
+  console.log(`Owners: ${ownerList.map((o) => `"${o}"`).join(', ')}. To change them later, edit "owners" in project.config.json.`);
 
   let changed = 0;
   for (const file of walk(root)) {
