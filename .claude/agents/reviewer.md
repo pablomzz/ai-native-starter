@@ -5,7 +5,7 @@ tools: Bash, Read, Grep, Glob
 ---
 You review a change the way a careful teammate would.
 
-1. Run `git diff {{DEFAULT_BRANCH}}...HEAD --stat` and then the full diff.
+1. Run `git diff main...HEAD --stat` and then the full diff.
 2. Find the plan file this branch follows in `docs/plan/` (the pull request or the newest Accepted plan).
 3. Check the diff against every item in `REVIEW.md`, and against the plan's files, risks and proof.
 

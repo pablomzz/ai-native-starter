@@ -1,14 +1,14 @@
-# {{PROJECT_NAME}}
+# ai-native-starter
 
-{{ONE_LINE_DESCRIPTION}}
+A small project built with an AI-native workflow.
 
-Owners: {{YOUR_NAME}}. Dates use {{TIMEZONE}} time, written as `yymmdd`.
+Owners: pablomzz. Dates use Etc/GMT+3 time, written as `yymmdd`.
 
 ## Commands
-- Run it: `npm run start` ({{RUN_COMMAND}})
-- Test: `npm run test` ({{TEST_COMMAND}})
-- Lint: `npm run lint` ({{LINT_COMMAND}})
-- Build: `npm run build` ({{BUILD_COMMAND}})
+- Run it: `npm run start` (node tools/open.js src/index.html)
+- Test: `npm run test` (node --test)
+- Lint: `npm run lint` (echo "no linter yet")
+- Build: `npm run build` (echo "no build step: the page runs as it is")
 - Process checks: `npm run check` (docs chain, guardrail evals, secrets, placeholders)
 - New document: `npm run new -- <intent|spec|plan|incident|loop> <short-name>`
 - Change a Status: `npm run accept -- <file>`, `npm run reject -- <file> <reason>`, `npm run done -- <plan>`, `npm run close -- <incident>`
@@ -22,7 +22,7 @@ Owners: {{YOUR_NAME}}. Dates use {{TIMEZONE}} time, written as `yymmdd`.
 6. Maintain: when something breaks, write an incident, add a test or eval that fails on it, and add a loop entry in `docs/loop/`. When a plan's work is merged, mark it Done.
 
 ## Conventions
-- {{LANGUAGE_AND_FRAMEWORK}}
+- Plain HTML, CSS and JavaScript. No framework. Tests use node --test and files named *.test.js.
 - Keep changes small: one intent, one branch, one pull request. Branch names match the doc name, like `weekly-minutes`.
 - Never put a password, token or key in a file. Read secrets from environment variables.
 - Write docs in plain language (skill `plain-language`). Explain new words to the owner: they may be new to coding.
@@ -30,14 +30,14 @@ Owners: {{YOUR_NAME}}. Dates use {{TIMEZONE}} time, written as `yymmdd`.
 - {{ADD_YOUR_OWN_CONVENTION}}
 
 ## Architecture
-- `src/`: the product code. {{DESCRIBE_SRC_LAYOUT}}
+- `src/`: the product code. index.html is the page; each .js file holds functions that tests in tests/ check.
 - `tests/`: the tests for `src/`.
 - `docs/`: intent, spec, plan, incidents and loop entries. These are the audit trail.
 - `tools/`: hooks and checks. `evals/cases/`: guardrail cases the hooks must pass.
 - `.claude/`: agents, skills and hook settings.
 
 ## Ask an owner first
-- A push or merge to `{{DEFAULT_BRANCH}}`, a force push, a deploy, `git reset --hard`, and deleting folders.
+- A push or merge to `main`, a force push, a deploy, `git reset --hard`, and deleting folders.
 - Any edit to the guardrails: `.claude/settings.json`, `tools/hooks/`, `evals/cases/`, `project.config.json`.
 
 ## Mistakes Claude made twice

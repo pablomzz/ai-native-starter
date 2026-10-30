@@ -1,17 +1,17 @@
 {
-  "projectName": "{{PROJECT_NAME}}",
-  "description": "{{ONE_LINE_DESCRIPTION}}",
+  "projectName": "ai-native-starter",
+  "description": "A small project built with an AI-native workflow.",
   "owners": [
-    "{{YOUR_NAME}}"
+    "pablomzz"
   ],
-  "timezone": "{{TIMEZONE}}",
+  "timezone": "Etc/GMT+3",
   "defaultBranch": "main",
-  "stack": "{{STACK}}",
+  "stack": "web",
   "commands": {
-    "build": "{{BUILD_COMMAND}}",
-    "test": "{{TEST_COMMAND}}",
-    "lint": "{{LINT_COMMAND}}",
-    "run": "{{RUN_COMMAND}}"
+    "build": "echo \"no build step: the page runs as it is\"",
+    "test": "node --test",
+    "lint": "echo \"no linter yet\"",
+    "run": "node tools/open.js src/index.html"
   },
   "protectedPaths": [
     ".env",
@@ -37,6 +37,6 @@
     "gh pr merge",
     "git reset --hard",
     "rm -rf",
-    "{{DEPLOY_COMMAND_PATTERN}}"
+    "deploy"
   ]
 }

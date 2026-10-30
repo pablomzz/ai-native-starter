@@ -1,6 +1,6 @@
-# {{PROJECT_NAME}}
+# ai-native-starter
 
-{{ONE_LINE_DESCRIPTION}}
+A small project built with an AI-native workflow.
 
 This project starts from the **AI-native starter**: a folder that sets up a six-stage loop (Plan, Design, Build, Test, Deploy, Maintain) for working with Claude Code. Each stage ends by saving one file to git, and the next stage starts by reading it.
 
