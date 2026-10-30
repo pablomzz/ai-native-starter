@@ -1,0 +1,753 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Your First AI-Native Project</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one 720px reading column on a warm paper ground, like a long-form playbook; wide bands (diagrams, two-column contrasts) sit in soft panels. */
+:root{
+  --paper:#FAF9F5; --panel:#F0EEE6; --panel-2:#E8E5DA; --ink:#1A1915; --ink-2:#3D3B35; --muted:#6E6B62;
+  --line:#DEDACE; --accent:#C2603E; --accent-ink:#9C4528; --dot:#1A1915; --dot-ink:#FAF9F5; --code:#F4F2EC; --ok:#3F7A4E;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1C1B18; --panel:#26251F; --panel-2:#302E27; --ink:#EEEBE2; --ink-2:#CFCBC0; --muted:#9C988D;
+  --line:#3A382F; --accent:#E3896A; --accent-ink:#EFA185; --dot:#EEEBE2; --dot-ink:#1C1B18; --code:#22211C; --ok:#7DBB8B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1C1B18; --panel:#26251F; --panel-2:#302E27; --ink:#EEEBE2; --ink-2:#CFCBC0; --muted:#9C988D;
+  --line:#3A382F; --accent:#E3896A; --accent-ink:#EFA185; --dot:#EEEBE2; --dot-ink:#1C1B18; --code:#22211C; --ok:#7DBB8B; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wide{max-width:900px}
+
+/* top bar */
+.bar{border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px;max-width:900px}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:22px;letter-spacing:-.01em;text-decoration:none}
+.mark svg{width:26px;height:26px}
+.bar small{color:var(--muted);font-size:13px}
+
+/* hero */
+.hero{padding-block:56px 24px}
+.hero svg.art{width:150px;height:auto;color:var(--ink);display:block;margin-bottom:36px}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,6vw,56px);line-height:1.05;letter-spacing:-.02em;margin:0 0 18px;text-wrap:balance}
+.lede{font-size:clamp(19px,2.4vw,22px);color:var(--ink-2);margin:0 0 40px;max-width:36ch;line-height:1.45}
+.meta{display:grid;gap:18px;margin:0 0 8px;padding:0}
+.meta div{display:grid;grid-template-columns:22px 1fr;column-gap:12px}
+.meta svg{width:18px;height:18px;color:var(--muted);margin-top:2px;grid-row:span 2}
+.meta dt,.meta dd{grid-column:2}
+.meta dt{font-size:13px;color:var(--muted)}
+.meta dd{margin:0;font-size:16px}
+
+/* panels and callouts */
+.callout{background:var(--panel);border-radius:10px;padding:24px 26px;display:grid;grid-template-columns:1fr auto;gap:12px 28px;align-items:center;margin-block:40px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);font-weight:600;margin:0 0 8px}
+.callout p{margin:0;color:var(--ink-2);font-size:15px}
+.callout code{font-size:13px}
+@media (max-width:560px){.callout{grid-template-columns:1fr}}
+
+h2{font-family:var(--serif);font-weight:500;font-size:clamp(30px,4vw,38px);letter-spacing:-.015em;line-height:1.15;margin:72px 0 18px;text-wrap:balance}
+h3{font-family:var(--serif);font-weight:500;font-size:25px;letter-spacing:-.01em;margin:48px 0 12px;text-wrap:balance}
+h4{font-family:var(--sans);font-weight:600;font-size:19px;margin:36px 0 10px}
+p{margin:0 0 18px}
+.prose ul,.prose ol{padding-left:22px;margin:0 0 20px}
+.prose li{margin-bottom:8px}
+.prose li::marker{color:var(--muted)}
+
+/* table of contents */
+.toc{border:1px solid var(--line);border-radius:12px;padding:26px 28px;margin-block:40px}
+.toc ol{list-style:none;margin:0;padding:0;columns:2;column-gap:32px}
+.toc li{display:grid;grid-template-columns:30px 1fr;font-size:16px;break-inside:avoid;margin-bottom:12px}
+.toc li span{color:var(--accent-ink);font-variant-numeric:tabular-nums;font-size:14px;padding-top:2px}
+.toc a{text-decoration-color:var(--line)}
+@media (max-width:560px){.toc ol{columns:1}}
+
+/* loop diagram */
+.figure{background:var(--panel);border-radius:14px;padding:28px;margin-block:32px}
+.figure .cols{display:grid;grid-template-columns:1fr 1.25fr;gap:28px;align-items:center}
+.figure figcaption{font-size:14px;color:var(--muted);text-align:center;margin-top:18px;line-height:1.5}
+.line-steps{display:grid;gap:6px}
+.line-steps div{background:var(--dot);color:var(--dot-ink);font-size:13px;text-align:center;padding:9px 6px;border-radius:5px}
+.line-steps i{display:block;text-align:center;font-style:normal;color:var(--muted);font-size:12px;line-height:1}
+.diagram-label{font-size:13px;margin-top:12px;color:var(--ink-2)}
+.diagram-label b{font-weight:600}
+svg.loop{width:100%;height:auto;max-width:360px;display:block;margin:0 auto}
+svg.loop .node{fill:var(--dot)} svg.loop .node-t{fill:var(--dot-ink);font:500 12px var(--sans)}
+svg.loop .hub{fill:var(--accent)} svg.loop .hub-t{fill:var(--paper);font:600 14px var(--sans)}
+svg.loop .arc{stroke:var(--accent);fill:none;stroke-width:2.5;stroke-linecap:round}
+svg.loop .arrow{fill:var(--accent)}
+@media (max-width:620px){.figure .cols{grid-template-columns:1fr}}
+
+/* glossary */
+.terms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 32px;margin:8px 0 0}
+.terms div{border-top:1px solid var(--line);padding-block:14px}
+.terms dt{font-weight:600;font-size:15px}
+.terms dd{margin:2px 0 0;color:var(--ink-2);font-size:15px}
+@media (max-width:620px){.terms{grid-template-columns:1fr}}
+
+/* stage header */
+.stage{display:grid;grid-template-columns:auto 1fr;gap:12px 28px;align-items:start;margin:96px 0 28px;padding-left:24px}
+.stage .num{font-family:var(--sans);font-weight:400;font-size:clamp(64px,10vw,88px);line-height:.9;color:var(--muted);opacity:.55;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.stage h2{margin:2px 0 8px;font-family:var(--sans);font-weight:500;font-size:clamp(32px,4.5vw,40px)}
+.stage p{margin:0;color:var(--ink-2);font-size:16px;max-width:46ch}
+@media (max-width:560px){.stage{grid-template-columns:1fr;padding-left:0}}
+
+/* traditional vs ai-native */
+.contrast{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-block:28px;padding:4px 0}
+.contrast h5{margin:0 0 8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.contrast .ai h5{color:var(--accent-ink)}
+.contrast p{font-size:15.5px;color:var(--ink-2);margin:0}
+@media (max-width:560px){.contrast{grid-template-columns:1fr}}
+
+/* label/value tables */
+.kv{border-top:1px solid var(--line);margin:8px 0 28px}
+.kv div{display:grid;grid-template-columns:150px 1fr;gap:20px;border-bottom:1px solid var(--line);padding-block:14px}
+.kv dt{font-size:14px;color:var(--muted);font-weight:500}
+.kv dd{margin:0;font-size:15.5px}
+@media (max-width:520px){.kv div{grid-template-columns:1fr;gap:4px}}
+
+/* code */
+code{font-family:var(--mono);font-size:.86em;background:var(--code);border:1px solid var(--line);padding:1px 5px;border-radius:4px}
+.code{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--code);margin:16px 0 26px}
+.code pre{margin:0;padding:20px 22px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.65;color:var(--ink-2);white-space:pre}
+.code pre code{background:none;border:0;padding:0;font-size:inherit}
+.code .tag{position:absolute;left:22px;top:-10px;background:var(--paper);padding:0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.copy{position:absolute;right:12px;top:12px;font:500 12.5px var(--sans);color:var(--ink-2);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.copy:hover{border-color:var(--muted)}
+.code.has-copy pre{padding-top:48px}
+.prompt pre{white-space:pre-wrap}
+
+/* checklists */
+.done{background:var(--panel);border-radius:10px;padding:20px 24px;margin:20px 0 28px}
+.done .eyebrow{margin-bottom:12px}
+.done ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.done label{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:15.5px;cursor:pointer;align-items:start}
+.done input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent)}
+.done input:checked + span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+
+/* level-up ladder */
+.ladder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 0 8px}
+.ladder div{border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.ladder b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px;font-weight:600}
+.ladder p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.5}
+@media (max-width:680px){.ladder{grid-template-columns:1fr}}
+
+/* sidebar note */
+.side{display:grid;grid-template-columns:200px 1fr;gap:24px;margin-block:36px;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.side h5{font-family:var(--sans);font-size:20px;font-weight:500;color:var(--ink-2);margin:4px 0 0;line-height:1.25}
+.side p{color:var(--ink-2);font-size:15.5px}
+.side p:last-child{margin:0}
+@media (max-width:620px){.side{grid-template-columns:1fr}}
+
+/* setup steps */
+.steps{counter-reset:s;list-style:none;padding:0;margin:20px 0}
+.steps>li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:0 14px;margin-bottom:28px}
+.steps>li::before{content:counter(s);width:32px;height:32px;border-radius:50%;background:var(--dot);color:var(--dot-ink);display:grid;place-items:center;font-weight:600;font-size:14px;margin-top:2px}
+.steps>li>div{min-width:0}
+.steps h4{margin:4px 0 6px}
+
+/* map table */
+.tablewrap{overflow-x:auto;margin:16px 0 28px;border-top:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th,td{text-align:left;padding:12px 10px 12px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:500}
+td:first-child{font-weight:600;white-space:nowrap}
+
+.faq details{border-bottom:1px solid var(--line);padding-block:14px}
+.faq summary{cursor:pointer;font-weight:600;font-size:16px;list-style-position:outside}
+.faq details p{margin:10px 0 0;color:var(--ink-2);font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:96px;padding-block:32px 48px;color:var(--muted);font-size:14px}
+footer p{max-width:62ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <span class="mark" aria-label="Starter Loop">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="9.5" fill="none" stroke="var(--ink)" stroke-width="2"/><path d="M19.6 6.4l2.8-.4-.6 2.8" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="13" r="3.2" fill="var(--accent)"/></svg>
+      Starter Loop
+    </span>
+    <small>A first-timer's guide</small>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <svg class="art" viewBox="0 0 150 130" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 34 L12 112 L138 112 L138 44 L70 44 L60 32 L22 32 Q12 32 12 42"/>
+      <path d="M12 56 L138 56" opacity=".35"/>
+      <path d="M55 86 a20 20 0 1 1 6 14" stroke="var(--accent)"/>
+      <path d="M57 104 l4-5 l6 3" stroke="var(--accent)"/>
+      <path d="M88 76 l14 0 M88 86 l24 0 M88 96 l18 0"/>
+      <path d="M100 20 l6 -10 M114 24 l10 -8 M120 36 l12 -2" opacity=".7"/>
+    </svg>
+    <h1>Your first AI-native project</h1>
+    <p class="lede">Start a real project the way modern teams work with AI: one idea at a time, in a loop, with you in charge of every decision.</p>
+    <dl class="meta">
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg><dt>Category</dt><dd>Getting started</dd></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 12h18"/></svg><dt>Tools</dt><dd>Claude Code, Git, GitHub, Node.js</dd></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><dt>Written for</dt><dd>Anyone fresh out of high school. No coding experience needed.</dd></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><dt>Time</dt><dd>About an afternoon for setup and your first lap</dd></div>
+    </dl>
+  </div>
+</section>
+
+<div class="wrap">
+  <aside class="callout">
+    <div>
+      <p class="eyebrow">You need the starter folder</p>
+      <p><strong>ai-native-starter.zip</strong> comes with this guide. It holds every template, helper and safety check described below, with <code>{{PLACEHOLDERS}}</code> you fill in during step 4.</p>
+    </div>
+  </aside>
+
+  <nav class="toc" aria-label="Contents">
+    <p class="eyebrow">Table of contents</p>
+    <ol>
+      <li><span>01</span><a href="#why">Why a loop?</a></li>
+      <li><span>02</span><a href="#words">Words you will meet</a></li>
+      <li><span>03</span><a href="#setup">Set up in eight steps</a></li>
+      <li><span>04</span><a href="#plan">Stage 1: Plan</a></li>
+      <li><span>05</span><a href="#design">Stage 2: Design</a></li>
+      <li><span>06</span><a href="#build">Stage 3: Build</a></li>
+      <li><span>07</span><a href="#test">Stage 4: Test</a></li>
+      <li><span>08</span><a href="#deploy">Stage 5: Deploy</a></li>
+      <li><span>09</span><a href="#maintain">Stage 6: Maintain</a></li>
+      <li><span>10</span><a href="#next">Your second lap, and help</a></li>
+    </ol>
+  </nav>
+
+  <section class="prose" id="why">
+    <h2>Why a loop?</h2>
+    <p>AI can now write code in minutes. So the slow part of making software is no longer typing code. The slow parts are deciding what to build, checking that it works, and fixing it when real people use it.</p>
+    <p>An AI-native project handles this with a loop of six stages: <strong>Plan, Design, Build, Test, Deploy, Maintain</strong>. Claude does most of the work inside each stage. You stand above the loop: you start it, you steer it, and you approve what moves forward.</p>
+
+    <figure class="figure">
+      <div class="cols">
+        <div>
+          <div class="line-steps" aria-label="Traditional order">
+            <div>Plan</div><i>↓</i><div>Design</div><i>↓</i><div>Build</div><i>↓</i><div>Test</div><i>↓</i><div>Deploy</div><i>↓</i><div>Maintain</div>
+          </div>
+          <p class="diagram-label"><b>The old way: a line.</b> Each step waits for the last. Going back means starting over.</p>
+        </div>
+        <div>
+          <svg class="loop" viewBox="0 0 320 300" role="img" aria-label="Six stages in a loop around you and Claude">
+            <defs><marker id="ah" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path class="arrow" d="M0 0L10 5L0 10z"/></marker></defs>
+            <g class="arcs">
+              <path class="arc" marker-end="url(#ah)" d="M188 38 Q222 48 240 70"/>
+              <path class="arc" marker-end="url(#ah)" d="M270 128 Q276 150 270 170"/>
+              <path class="arc" marker-end="url(#ah)" d="M240 228 Q222 252 192 262"/>
+              <path class="arc" marker-end="url(#ah)" d="M130 262 Q100 252 82 230"/>
+              <path class="arc" marker-end="url(#ah)" d="M52 172 Q46 150 52 128"/>
+              <path class="arc" marker-end="url(#ah)" d="M82 70 Q100 48 128 38"/>
+            </g>
+            <circle class="hub" cx="160" cy="150" r="52"/><text class="hub-t" x="160" y="146" text-anchor="middle">You +</text><text class="hub-t" x="160" y="164" text-anchor="middle">Claude</text>
+            <circle class="node" cx="160" cy="34" r="30"/><text class="node-t" x="160" y="38" text-anchor="middle">Plan</text>
+            <circle class="node" cx="262" cy="96" r="30"/><text class="node-t" x="262" y="100" text-anchor="middle">Design</text>
+            <circle class="node" cx="262" cy="204" r="30"/><text class="node-t" x="262" y="208" text-anchor="middle">Build</text>
+            <circle class="node" cx="160" cy="266" r="30"/><text class="node-t" x="160" y="270" text-anchor="middle">Test</text>
+            <circle class="node" cx="58" cy="204" r="30"/><text class="node-t" x="58" y="208" text-anchor="middle">Deploy</text>
+            <circle class="node" cx="58" cy="96" r="30"/><text class="node-t" x="58" y="100" text-anchor="middle">Maintain</text>
+          </svg>
+          <p class="diagram-label" style="text-align:center"><b>The AI-native way: a loop.</b> One lap can take hours, not weeks.</p>
+        </div>
+      </div>
+      <figcaption>Every stage ends by saving one file to git. The next stage starts by reading it. Together, those files are the story of your project: who asked for what, what Claude made, and who said yes.</figcaption>
+    </figure>
+
+    <p>Here is the chain of files you will make on every lap:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Stage</th><th>You save</th><th>In the starter</th></tr></thead>
+      <tbody>
+        <tr><td>1 Plan</td><td>An <em>intent</em>: the problem, in your words</td><td><code>docs/intent/</code></td></tr>
+        <tr><td>2 Design</td><td>A <em>spec</em>: what it must do and how</td><td><code>docs/spec/</code></td></tr>
+        <tr><td>3 Build</td><td>A <em>plan</em>, then the code</td><td><code>docs/plan/</code>, <code>src/</code></td></tr>
+        <tr><td>4 Test</td><td>Tests that prove it works</td><td><code>tests/</code>, <code>evals/</code></td></tr>
+        <tr><td>5 Deploy</td><td>A pull request with its review</td><td>GitHub</td></tr>
+        <tr><td>6 Maintain</td><td>An incident note and what you learned</td><td><code>docs/incidents/</code>, <code>docs/loop/</code></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="words">
+    <h2>Words you will meet</h2>
+    <p>You do not need to memorise these. Come back here when a word is new.</p>
+    <dl class="terms">
+      <div><dt>Terminal</dt><dd>A window where you type commands. On Mac it is called Terminal; on Windows, use the Git Bash app (installed with Git).</dd></div>
+      <div><dt>Git</dt><dd>A tool that saves snapshots of your folder, so you can see every change and undo any of them.</dd></div>
+      <div><dt>Repository (repo)</dt><dd>A project folder that Git is tracking.</dd></div>
+      <div><dt>Commit</dt><dd>One saved snapshot, with a short message saying what changed.</dd></div>
+      <div><dt>Branch</dt><dd>A side copy where you try a change without touching the main version.</dd></div>
+      <div><dt>GitHub</dt><dd>A website that stores your repo online, so it is backed up and can be shared.</dd></div>
+      <div><dt>Pull request (PR)</dt><dd>A request to bring a branch into the main version. It is where the review happens.</dd></div>
+      <div><dt>Claude Code</dt><dd>Claude working inside your project folder: it can read files, run commands and edit code, with your permission.</dd></div>
+      <div><dt>Plan mode</dt><dd>A Claude Code mode where Claude can read and plan, but cannot change files until you accept the plan.</dd></div>
+      <div><dt>CLAUDE.md</dt><dd>A one-page note Claude reads at the start of every session: your commands, rules and known mistakes.</dd></div>
+      <div><dt>Skill</dt><dd>A short rulebook Claude applies when a task matches, such as "write in plain language".</dd></div>
+      <div><dt>Agent</dt><dd>A helper Claude can send off with one job, such as reviewing a change. It reports back.</dd></div>
+      <div><dt>Hook</dt><dd>A tiny script that runs before Claude acts. It can block a mistake or ask you first.</dd></div>
+      <div><dt>Test and eval</dt><dd>A check that runs by itself and fails if something is wrong. Evals here test the hooks.</dd></div>
+      <div><dt>CI</dt><dd>Short for continuous integration: GitHub runs your checks on every push.</dd></div>
+      <div><dt>Placeholder</dt><dd>A blank like <code>{{PROJECT_NAME}}</code> that you replace with your own value.</dd></div>
+    </dl>
+  </section>
+
+  <section class="prose" id="setup">
+    <h2>Set up in eight steps</h2>
+    <p>Do this once per project. Copy each command with its button, paste it into your terminal, and press Enter.</p>
+
+    <ol class="steps">
+      <li><div>
+        <h4>Install the tools</h4>
+        <p>Install <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">Git</a> and <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a> (the LTS version). Make a free <a href="https://github.com" target="_blank" rel="noopener">GitHub</a> account. Then install Claude Code by following its <a href="https://docs.claude.com/en/docs/claude-code/overview" target="_blank" rel="noopener">setup page</a>. You need a Claude plan that includes Claude Code.</p>
+        <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>git --version
+node --version
+claude --version</code></pre></div>
+        <p>Each command should print a version number. If one says "not found", reinstall that tool and open a new terminal.</p>
+      </div></li>
+      <li><div>
+        <h4>Unzip the starter and rename it</h4>
+        <p>Unzip <code>ai-native-starter.zip</code> into a place you will find again, like a <code>Projects</code> folder. Rename the folder to your project's name, for example <code>study-planner</code>.</p>
+      </div></li>
+      <li><div>
+        <h4>Open a terminal in that folder</h4>
+        <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>cd ~/Projects/study-planner</code></pre></div>
+        <p><code>cd</code> means "change directory". Change the path to where your folder is.</p>
+      </div></li>
+      <li><div>
+        <h4>Fill in the placeholders</h4>
+        <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>npm run init</code></pre></div>
+        <p>It asks seven short questions: the project name, your name (or every owner, if friends are building with you), your time zone, the main branch, what you will build with, and a word from your deploy command. Press Enter to keep a suggestion.</p>
+        <div class="code"><span class="tag">The stack question</span><pre><code>What will you build with?
+  1. Plain web page (HTML, CSS, JavaScript) - the easiest start
+  2. Python - install Python 3 and run: python -m pip install pytest ruff
+  3. Node.js program (JavaScript in the terminal)
+  4. Something else - I will type my own commands
+Pick a number [1]:</code></pre></div>
+        <p>Not sure? Pick 1. The starter then adds a tiny working page and one test, so your project runs from the first minute. You can change any answer later in <code>project.config.json</code>.</p>
+      </div></li>
+      <li><div>
+        <h4>Run the checks</h4>
+        <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>npm run check</code></pre></div>
+        <div class="code"><span class="tag">What you should see</span><pre><code>✓ docs chain: ok
+✓ guardrail evals: 21/21 passed
+✓ secrets: none found
+! placeholders: 5 left (ADD_YOUR_OWN_CONVENTION, ...)
+  These are yours to write when you are ready.
+
+all checks passed</code></pre></div>
+        <p>The placeholders left are rules only you can write, like a house style. Fill them in as you learn what your project needs. Now see your project run:</p>
+        <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>npm run test
+npm run start</code></pre></div>
+        <p><code>npm run test</code> should say <code>fail 0</code>. <code>npm run start</code> opens your page (or runs your program). You now have a working loop before writing a single line yourself.</p>
+      </div></li>
+      <li><div>
+        <h4>Make your first commit</h4>
+        <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>git init -b main
+git add .
+git commit -m "chore: start from the AI-native starter"</code></pre></div>
+      </div></li>
+      <li><div>
+        <h4>Put it on GitHub</h4>
+        <p>On github.com, choose <strong>New repository</strong>, give it the same name, keep it empty, and create it. GitHub then shows two lines that start with <code>git remote add</code> and <code>git push</code>. Copy and run them. From now on, every push runs your checks on GitHub too.</p>
+      </div></li>
+      <li><div>
+        <h4>Meet Claude in your project</h4>
+        <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>claude</code></pre></div>
+        <div class="code prompt has-copy"><span class="tag">Then type</span><button class="copy" type="button">Copy</button><pre><code>Read CLAUDE.md and README.md. In five bullet points, explain how we will work in this project. Then tell me which file I should open first.</code></pre></div>
+        <p>If Claude's answer matches the six stages above, your setup works.</p>
+      </div></li>
+    </ol>
+
+    <div class="done" data-list="setup">
+      <p class="eyebrow">You are set up when</p>
+      <ul>
+        <li><label><input type="checkbox" id="s1"><span><code>npm run check</code> ends with "all checks passed".</span></label></li>
+        <li><label><input type="checkbox" id="s2"><span>Your repo is on GitHub, and its Actions tab shows a green CI run.</span></label></li>
+        <li><label><input type="checkbox" id="s3"><span>Claude explained the loop back to you from <code>CLAUDE.md</code>.</span></label></li>
+      </ul>
+    </div>
+
+    <div class="side">
+      <h5>The example we follow</h5>
+      <div>
+        <p>Every stage below uses one running example: <strong>Sam</strong>, who just finished school, builds a study planner. Sam types study sessions (subject and minutes), and the page shows the minutes per subject this week.</p>
+        <p>All of Sam's real files are in the starter under <code>examples/study-planner/</code>. Open them next to this guide. Copy their shape, not their words.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 1 -->
+  <div class="stage" id="plan"><span class="num">01</span><div><h2>Plan</h2><p>An idea becomes a short file in your own words, before anyone writes code.</p></div></div>
+  <section class="prose">
+    <h3>Capture the idea as an intent</h3>
+    <p>An <em>intent</em> says what is wrong today, who feels it, and what better looks like. You talk; Claude asks questions and writes it up; you fix what it got wrong. Only you can mark it Accepted.</p>
+    <div class="contrast">
+      <div><h5>Traditional</h5><p>An idea sits in a backlog, goes through meetings and story points, and changes owners before anyone builds it.</p></div>
+      <div class="ai"><h5>AI-native</h5><p>You brainstorm with Claude and save the result as <code>intent.md</code> the same day. It is readable by you and by the next stage.</p></div>
+    </div>
+    <dl class="kv">
+      <div><dt>You need</dt><dd>An idea, or something that annoys you. Nothing else.</dd></div>
+      <div><dt>Starter helps with</dt><dd><code>docs/intent/TEMPLATE.md</code>, the <code>write-intent</code> skill, <code>npm run new -- intent &lt;name&gt;</code></dd></div>
+    </dl>
+    <h4>Do this</h4>
+    <ol>
+      <li>Make a branch for the idea: <code>git switch -c weekly-minutes</code>.</li>
+      <li>Tell Claude the problem in your own words. No special language is needed.</li>
+      <li>Answer its questions. The <code>write-intent</code> skill asks at most three.</li>
+      <li>Read the draft. Correct anything Claude misunderstood.</li>
+      <li>Accept it with <code>npm run accept -- docs/intent/251102-weekly-minutes.md</code> (use your file's name). It writes the Status line for you, with today's date and your name. Then commit.</li>
+    </ol>
+    <div class="code prompt has-copy"><span class="tag">Try it: Sam's prompt</span><button class="copy" type="button">Copy</button><pre><code>I never know how much time I study each subject. Before exams I find out I barely touched chemistry. Help me write an intent.</code></pre></div>
+    <div class="code"><span class="tag">What it looks like: docs/intent/251102-weekly-minutes.md</span><pre><code># Intent: weekly minutes per subject
+Author: Sam
+
+## Problem
+I study for five subjects, but I only remember the ones I like.
+I have no quick way to see where my time went this week.
+
+## Outcome
+I type each study session (subject and minutes), and the page shows
+the total minutes per subject for this week, biggest first.
+
+## Constraints
+- No account and no server: everything stays on my laptop.
+
+## Status
+Accepted 251102 by Sam</code></pre></div>
+    <div class="done" data-list="plan">
+      <p class="eyebrow">You are done when</p>
+      <ul>
+        <li><label><input type="checkbox" id="p1"><span>The intent says the problem without naming a solution.</span></label></li>
+        <li><label><input type="checkbox" id="p2"><span>"Done when" has at least one thing you could see or test.</span></label></li>
+        <li><label><input type="checkbox" id="p3"><span><code>npm run accept</code> set the Status, and the file is committed.</span></label></li>
+      </ul>
+    </div>
+    <h4>Practice to level up</h4>
+    <div class="ladder">
+      <div><b>First lap</b><p>Write an intent for one tiny wish: "show today's date at the top of the page".</p></div>
+      <div><b>Second lap</b><p>Ask a friend what bugs them about how they study. Write their intent in their words.</p></div>
+      <div><b>Stretch</b><p>Write two intents for the same problem with different outcomes. Reject one, with a reason in its Status.</p></div>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <div class="stage" id="design"><span class="num">02</span><div><h2>Design</h2><p>The accepted intent becomes requirements and a design in one session, with your rules applied as it is written.</p></div></div>
+  <section class="prose">
+    <h3>Turn the intent into a spec</h3>
+    <p>A <em>spec</em> lists what the change must do, numbered so later stages can point at each item. Claude writes it with your skills switched on, such as <code>security-basics</code>, and lists every concern a skill raises. You settle each concern before any code exists.</p>
+    <div class="contrast">
+      <div><h5>Traditional</h5><p>One team writes requirements, another team turns them into a design, and problems show up in a review weeks later.</p></div>
+      <div class="ai"><h5>AI-native</h5><p>One session with Claude produces both, guided by your skills, with concerns flagged up front.</p></div>
+    </div>
+    <dl class="kv">
+      <div><dt>You need</dt><dd>An intent whose Status is Accepted.</dd></div>
+      <div><dt>Starter helps with</dt><dd><code>docs/spec/TEMPLATE.md</code>, the skills in <code>.claude/skills/</code></dd></div>
+    </dl>
+    <h4>Do this</h4>
+    <ol>
+      <li>Run <code>npm run new -- spec weekly-minutes</code>. Use the same short name as the intent: the new spec then links to it by itself, even if you wrote the intent on another day.</li>
+      <li>Give Claude the prompt below.</li>
+      <li>Check the spec against your intent: does it solve the problem you wrote?</li>
+      <li>Answer each flagged concern first. Write down what you decided.</li>
+      <li>Accept it with <code>npm run accept -- docs/spec/&lt;file&gt;</code> and commit it next to the intent. The command refuses if the intent is not Accepted yet.</li>
+    </ol>
+    <div class="code prompt has-copy"><span class="tag">Try it</span><button class="copy" type="button">Copy</button><pre><code>Read docs/intent/251102-weekly-minutes.md and fill in docs/spec/251102-weekly-minutes.md. Apply the skills in .claude/skills. Number each requirement. List every concern a skill raises under "Flagged concerns" and ask me about each one before you finish.</code></pre></div>
+    <div class="code"><span class="tag">What it looks like: a flagged concern</span><pre><code>## Flagged concerns
+- Concern (security-basics): localStorage is readable by anyone who
+  uses the same laptop. Resolved: Sam is fine with it; the data is
+  not private. Written down so a later change does not add private
+  data here.</code></pre></div>
+    <div class="done" data-list="design">
+      <p class="eyebrow">You are done when</p>
+      <ul>
+        <li><label><input type="checkbox" id="d1"><span>Every requirement is numbered and traces back to the intent.</span></label></li>
+        <li><label><input type="checkbox" id="d2"><span>Each flagged concern has a written decision.</span></label></li>
+        <li><label><input type="checkbox" id="d3"><span>"Out of scope" names at least one thing you are not doing.</span></label></li>
+      </ul>
+    </div>
+    <h4>Practice to level up</h4>
+    <div class="ladder">
+      <div><b>First lap</b><p>Ask Claude for a quick sketch of the screen as plain HTML, and link it in the spec's Design section.</p></div>
+      <div><b>Second lap</b><p>Write your own skill: copy <code>plain-language</code> and turn it into <code>my-style</code> with your colours and tone.</p></div>
+      <div><b>Stretch</b><p>Ask: "What would make this spec fail for a phone user?" Add what you learn as requirements.</p></div>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <div class="stage" id="build"><span class="num">03</span><div><h2>Build</h2><p>Nothing is built without an accepted plan. What you know goes into files Claude reads, and the safety rules run as code.</p></div></div>
+  <section class="prose">
+    <h3>Start in plan mode</h3>
+    <p>In Claude Code, press <strong>Shift+Tab</strong> until the bottom of the screen says plan mode. The first press usually switches on auto-accept instead, so keep pressing and read the label. Claude can now read everything but change nothing. It writes a plan; you question it; you accept it. Then Claude builds, often in one pass.</p>
+    <div class="contrast">
+      <div><h5>Traditional</h5><p>A developer reads the design, decides the details alone, and writes every line by hand.</p></div>
+      <div class="ai"><h5>AI-native</h5><p>Claude proposes a plan you can question before any code exists, then writes the code and tests from it.</p></div>
+    </div>
+    <dl class="kv">
+      <div><dt>You need</dt><dd>An accepted spec, and <code>CLAUDE.md</code> filled in.</dd></div>
+      <div><dt>Starter helps with</dt><dd><code>docs/plan/TEMPLATE.md</code>; the <code>plan-before-code</code> hook, which asks you before Claude edits <code>src/</code> while no plan is Accepted</dd></div>
+    </dl>
+    <h4>Do this</h4>
+    <ol>
+      <li>Switch to plan mode and give Claude the prompt below.</li>
+      <li>Question the plan: what could this break, which step is riskiest, what did you choose not to do?</li>
+      <li>Keep going until someone who never saw the chat could build from the plan alone.</li>
+      <li>Run <code>npm run new -- plan weekly-minutes</code>, ask Claude to put the plan in it, then <code>npm run accept -- docs/plan/&lt;file&gt;</code> and commit.</li>
+      <li>Leave plan mode and say "Build it, following the plan". If the work drifts from the plan, update the plan. After the merge, run <code>npm run done -- docs/plan/&lt;file&gt;</code>: an accepted plan unlocks <code>src/</code> for 14 days, so close it when the work is finished.</li>
+    </ol>
+    <div class="code prompt has-copy"><span class="tag">Try it</span><button class="copy" type="button">Copy</button><pre><code>Read the intent and spec for weekly-minutes. Write an implementation plan from docs/plan/TEMPLATE.md: the files that change, in order, the risks, and the tests that will prove it works. Write the tests first.</code></pre></div>
+    <div class="code"><span class="tag">What it looks like: the plan</span><pre><code>## Files that change, in order
+1. tests/planner.test.js (new): fails at first.
+2. src/planner.js (new): until the tests pass.
+3. src/index.html (new): the form and the list.
+
+## Risks
+- Riskiest step: the week boundary. A session on Sunday night
+  must count for that week, not the next.
+
+## Proof
+- A Sunday 23:30 session counts in the week that started Monday.</code></pre></div>
+
+    <h3>Teach Claude with CLAUDE.md, skills and hooks</h3>
+    <p>Three files carry what you know, so you never repeat yourself:</p>
+    <ul>
+      <li><strong><code>CLAUDE.md</code></strong> holds your commands, conventions and mistakes. One rule matters most: when Claude makes the same mistake twice, add the fix under "Mistakes Claude made twice". Keep it under a page.</li>
+      <li><strong>Skills</strong> hold rules Claude must apply the same way every time. A skill is advice, so Claude usually follows it.</li>
+      <li><strong>Hooks</strong> are rules that must always hold. The starter has four: they block secrets, protect files like <code>.env</code>, ask before code without a recent plan, and ask before you push or merge to main. Claude must also ask before it edits the hooks themselves, so it cannot quietly switch them off when you say "stop asking me".</li>
+    </ul>
+    <div class="done" data-list="build">
+      <p class="eyebrow">You are done when</p>
+      <ul>
+        <li><label><input type="checkbox" id="b1"><span>The plan names its files, its riskiest step and its proof.</span></label></li>
+        <li><label><input type="checkbox" id="b2"><span>The plan was committed before the first change to <code>src/</code>.</span></label></li>
+        <li><label><input type="checkbox" id="b3"><span>The change matches the plan, or the plan was updated.</span></label></li>
+      </ul>
+    </div>
+    <h4>Practice to level up</h4>
+    <div class="ladder">
+      <div><b>First lap</b><p>Try editing <code>src/</code> with no plan. Watch the hook ask you. Say no, and write the plan.</p></div>
+      <div><b>Second lap</b><p>Use the <code>researcher</code> agent: "Use the researcher agent to find where the week starts."</p></div>
+      <div><b>Stretch</b><p>Add a line to "Mistakes Claude made twice" the next time Claude repeats an error. Check it is gone in the next session.</p></div>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <div class="stage" id="test"><span class="num">04</span><div><h2>Test</h2><p>Checks run all the time, not only at the end. Claude can see them pass or fail, and fixes its own work.</p></div></div>
+  <section class="prose">
+    <h3>Give Claude a feedback loop</h3>
+    <p>A test is a small program that checks one thing and fails loudly if it is wrong. When Claude can run the tests, it notices its own mistakes and fixes them before you ever see them. Your job is to decide what "working" means.</p>
+    <div class="contrast">
+      <div><h5>Traditional</h5><p>Testing is a separate phase at the end, done by another team, and problems come back days later.</p></div>
+      <div class="ai"><h5>AI-native</h5><p>Tests are written first and run after every change. Evals check the safety rules themselves.</p></div>
+    </div>
+    <dl class="kv">
+      <div><dt>You need</dt><dd>A test command. <code>npm run init</code> set one for your stack: <code>node --test</code> for web and Node.js, <code>python -m pytest</code> for Python.</dd></div>
+      <div><dt>Starter helps with</dt><dd><code>npm run test</code>, <code>npm run check</code>, the <code>verifier</code> agent, 21 guardrail evals in <code>evals/cases/</code></dd></div>
+    </dl>
+    <h4>Do this</h4>
+    <ol>
+      <li>Ask for the tests first, and watch them fail: that proves they test something.</li>
+      <li>Let Claude build until they pass.</li>
+      <li>Before you call it done, ask the <code>verifier</code> agent to run every check.</li>
+      <li>Never let anyone, including Claude, change a test just to make it pass. Fix the code instead.</li>
+    </ol>
+    <div class="code prompt has-copy"><span class="tag">Try it</span><button class="copy" type="button">Copy</button><pre><code>Use the verifier agent to run lint, tests, build and npm run check. Show me the results as a table. If anything fails, fix the code, not the test, and run it again.</code></pre></div>
+    <div class="code"><span class="tag">What it looks like: one test</span><pre><code>test('Sunday 23:30 counts in the week that started the Monday before', () =&gt; {
+  const sunday = new Date(2025, 10, 9, 23, 30);
+  const list = addSession([], { subject: 'History', minutes: 20, at: sunday });
+  assert.deepEqual(weeklyTotals(list, TODAY), [{ subject: 'History', minutes: 20 }]);
+});</code></pre></div>
+    <p>Evals work the same way for your safety rules. Each one feeds a hook a pretend action and checks the answer. They come in twins: one action the hook must stop, and a close one it must allow. That way a hook cannot "pass" by blocking everything.</p>
+    <div class="done" data-list="test">
+      <p class="eyebrow">You are done when</p>
+      <ul>
+        <li><label><input type="checkbox" id="t1"><span>Every item in the plan's Proof has a test.</span></label></li>
+        <li><label><input type="checkbox" id="t2"><span>You saw each new test fail once, before the code existed.</span></label></li>
+        <li><label><input type="checkbox" id="t3"><span>The verifier says "Ready".</span></label></li>
+      </ul>
+    </div>
+    <h4>Practice to level up</h4>
+    <div class="ladder">
+      <div><b>First lap</b><p>Run <code>node --test examples/study-planner/code/planner.test.js</code>. Then break one line in <code>planner.js</code> and watch a test fail.</p></div>
+      <div><b>Second lap</b><p>Ask Claude: "What input would break this? Write a test for it." Keep the tests that fail.</p></div>
+      <div><b>Stretch</b><p>Write a new eval twin in <code>evals/cases/</code> for a command you never want Claude to run.</p></div>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <div class="stage" id="deploy"><span class="num">05</span><div><h2>Deploy</h2><p>An AI review goes first, and you decide. Approvals that must never be skipped are hooks, not habits.</p></div></div>
+  <section class="prose">
+    <h3>Review, then ship with a gate</h3>
+    <p>You push your branch and open a pull request on GitHub. The <code>reviewer</code> agent reads the change against <code>REVIEW.md</code> and the plan, and lists findings. You fix the "must fix" items, then merge. Pushing to main always asks you first, because a hook says so.</p>
+    <div class="contrast">
+      <div><h5>Traditional</h5><p>A person reads every line, and rules get checked in meetings, sometimes and not always the same way.</p></div>
+      <div class="ai"><h5>AI-native</h5><p>Agents review every change the same way. People review what matters most, and hooks enforce the approvals.</p></div>
+    </div>
+    <dl class="kv">
+      <div><dt>You need</dt><dd>Passing tests and a GitHub repo.</dd></div>
+      <div><dt>Starter helps with</dt><dd><code>REVIEW.md</code>, the <code>reviewer</code> agent, the PR template, CI in <code>.github/workflows/ci.yml</code>, the <code>ask-before-shipping</code> hook</dd></div>
+    </dl>
+    <h4>Do this</h4>
+    <ol>
+      <li>Ask the reviewer to check your branch (prompt below).</li>
+      <li>Fix each "must fix". Run the reviewer again until it has no findings.</li>
+      <li>Push the branch: <code>git push -u origin weekly-minutes</code>. Open a pull request; the template asks for your three file links.</li>
+      <li>Wait for CI to go green on GitHub. Merge the pull request there.</li>
+    </ol>
+    <div class="code prompt has-copy"><span class="tag">Try it</span><button class="copy" type="button">Copy</button><pre><code>Use the reviewer agent to review this branch against REVIEW.md and docs/plan/251102-weekly-minutes.md. List findings, most serious first, and mark each "must fix" or "nice to have".</code></pre></div>
+    <div class="code"><span class="tag">What it looks like: a finding</span><pre><code>1. Must fix (REVIEW.md item 3, security-basics). src/index.html line 41
+   builds the list with innerHTML and the subject name. A subject like
+   &lt;img src=x onerror=alert(1)&gt; would run as code. Use textContent,
+   as the spec says.</code></pre></div>
+    <div class="done" data-list="deploy">
+      <p class="eyebrow">You are done when</p>
+      <ul>
+        <li><label><input type="checkbox" id="y1"><span>The reviewer has no "must fix" findings left.</span></label></li>
+        <li><label><input type="checkbox" id="y2"><span>CI is green on the pull request.</span></label></li>
+        <li><label><input type="checkbox" id="y3"><span>The pull request links the intent, spec and plan.</span></label></li>
+      </ul>
+    </div>
+    <h4>Practice to level up</h4>
+    <div class="ladder">
+      <div><b>First lap</b><p>Ask Claude to run <code>git push origin main</code>. Watch the hook ask you, and say no.</p></div>
+      <div><b>Second lap</b><p>Add a rule to <code>REVIEW.md</code> that fits your project, such as "every button has a label". Run the reviewer again.</p></div>
+      <div><b>Stretch</b><p>Put your page online for free with GitHub Pages, and add the deploy word to <code>askBeforeCommands</code>.</p></div>
+    </div>
+  </section>
+
+  <!-- STAGE 6 -->
+  <div class="stage" id="maintain"><span class="num">06</span><div><h2>Maintain</h2><p>When something breaks, it becomes a test, a lesson and a new intent. That closes the loop.</p></div></div>
+  <section class="prose">
+    <h3>Close the loop</h3>
+    <p>Real people will use your project in ways you never expected. Something will break, and that is normal. What matters is that it can never break the same way again. Each problem leaves behind three things: a test, a lesson and, if needed, a new intent.</p>
+    <div class="contrast">
+      <div><h5>Traditional</h5><p>People watch for bugs, fix them in a hurry, and the same kind of bug comes back later.</p></div>
+      <div class="ai"><h5>AI-native</h5><p>Every problem is written down, gets a guardrail, and feeds back into the loop as a new intent.</p></div>
+    </div>
+    <dl class="kv">
+      <div><dt>You need</dt><dd>Something that broke, or a user who was confused.</dd></div>
+      <div><dt>Starter helps with</dt><dd><code>docs/incidents/TEMPLATE.md</code>, <code>docs/loop/TEMPLATE.md</code>, <code>evals/README.md</code></dd></div>
+    </dl>
+    <h4>Do this</h4>
+    <ol>
+      <li>Stop the harm first: undo the change, or fix the data.</li>
+      <li>Run <code>npm run new -- incident &lt;name&gt;</code> and write what happened, in plain words, with no blame.</li>
+      <li>Add the test or eval that would have caught it. Watch it fail, then fix the code.</li>
+      <li>Add a loop entry: <code>npm run new -- loop &lt;name&gt;</code>. If the lesson is a rule, put it in <code>CLAUDE.md</code> too.</li>
+      <li>Close the incident once the guardrail is merged: <code>npm run close -- docs/incidents/&lt;file&gt;</code>.</li>
+      <li>If the problem shows a real need, write a new intent. A new lap begins.</li>
+    </ol>
+    <div class="code prompt has-copy"><span class="tag">Try it: what Sam said</span><button class="copy" type="button">Copy</button><pre><code>My friend typed "1h" in Minutes and the totals now show NaN. Help me write an incident from docs/incidents/TEMPLATE.md, add a test that fails on this, fix the code, and draft a loop entry with npm run new -- loop nan-from-hours.</code></pre></div>
+    <div class="code"><span class="tag">What it looks like: docs/loop/251109-nan-from-hours.md</span><pre><code># Loop: NaN from "1h" in Minutes
+
+## Tried
+The first release, used by two friends.
+
+## Saw
+"1h" was saved as NaN and spread to the totals.
+
+## Changed
+A test for text in Minutes, and a CLAUDE.md rule: "Check numbers with
+Number.isInteger, never only with &lt; and &gt;, because NaN passes both."
+
+## Open
+People think in hours. Now an intent: docs/intent/251110-hours-and-minutes.md</code></pre></div>
+    <div class="done" data-list="maintain">
+      <p class="eyebrow">You are done when</p>
+      <ul>
+        <li><label><input type="checkbox" id="m1"><span>The incident names the test or eval that now guards it.</span></label></li>
+        <li><label><input type="checkbox" id="m2"><span>The loop log has an entry, and <code>CLAUDE.md</code> has the rule if there is one.</span></label></li>
+        <li><label><input type="checkbox" id="m3"><span><code>npm run close</code> marked the incident Closed after the guardrail was merged.</span></label></li>
+      </ul>
+    </div>
+    <h4>Practice to level up</h4>
+    <div class="ladder">
+      <div><b>First lap</b><p>Read Sam's <code>06-incident.md</code>, <code>07-loop-entry.md</code> and <code>08-next-intent.md</code> in order. Notice how one leads to the next.</p></div>
+      <div><b>Second lap</b><p>Ask a friend to try to break your page for ten minutes. Write one incident for the best thing they find.</p></div>
+      <div><b>Stretch</b><p>Once a week, ask Claude: "Read docs/loop/. Which open item should become the next intent?"</p></div>
+    </div>
+  </section>
+
+  <section class="prose" id="next">
+    <h2>Your second lap, and help</h2>
+    <p>You have finished one lap when an idea has gone from intent to merged code, and you have written down what you learned. Your second lap starts from <code>08-next-intent.md</code>, or from your own loop log. Each lap gets faster, because <code>CLAUDE.md</code>, your skills and your tests remember what the last lap taught.</p>
+
+    <h3>What the starter already set up for you</h3>
+    <p>The playbook says you can start with any of five practices, because none of them needs another first. The starter gives you all five on day one:</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Practice</th><th>Where it lives</th></tr></thead>
+      <tbody>
+        <tr><td>Capture intent</td><td><code>docs/intent/</code> and the <code>write-intent</code> skill</td></tr>
+        <tr><td>CLAUDE.md</td><td><code>CLAUDE.md</code>, with your answers from <code>npm run init</code></td></tr>
+        <tr><td>Feedback loop</td><td><code>npm run check</code>, <code>npm run test</code>, the <code>verifier</code> agent</td></tr>
+        <tr><td>Hooks</td><td><code>.claude/settings.json</code> and <code>tools/hooks/</code>, proved by 21 evals</td></tr>
+        <tr><td>Plan mode</td><td>Shift+Tab in Claude Code, backed by the <code>plan-before-code</code> hook</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Building with a friend</h3>
+    <ul>
+      <li>When <code>npm run init</code> asks for your name, list every owner: <code>Ana, Bruno</code>. Any owner can accept a document; <code>npm run accept</code> uses your git name.</li>
+      <li>Give each idea its own branch, named after its intent, and merge through pull requests on GitHub. Nobody pushes straight to main; the hook asks either way.</li>
+      <li>Loop entries are one small file each, so two people adding lessons on different branches never get a merge conflict.</li>
+      <li>Agree who reviews whose pull request. The <code>reviewer</code> agent goes first; a person decides.</li>
+    </ul>
+
+    <h3>When something goes wrong</h3>
+    <div class="faq">
+      <details><summary>"npm: command not found"</summary><p>Node.js is not installed, or your terminal opened before it was. Install the LTS version from nodejs.org, then close the terminal and open a new one.</p></details>
+      <details><summary>Claude keeps asking before it edits my code</summary><p>That is the <code>plan-before-code</code> hook. It asks unless a plan in <code>docs/plan/</code> was accepted in the last 14 days. Write and accept a plan for this change, or say yes for a tiny fix.</p></details>
+      <details><summary>Claude asks before editing <code>.claude/settings.json</code> or the hooks</summary><p>That is on purpose. Those files are your guardrails. Say yes only if you asked for that change and understand it. To change a rule yourself, edit <code>project.config.json</code> by hand.</p></details>
+      <details><summary>The check says a Status line "is not valid"</summary><p>Do not type Status lines by hand. Run the command the message suggests, such as <code>npm run accept -- docs/intent/&lt;file&gt;</code>. It writes the exact format with today's date.</p></details>
+      <details><summary>The check says a spec's intent "does not exist"</summary><p>The path under <code>## Intent</code> has the wrong date or name. The message suggests the right file ("Did you mean ..."). Copy that path in. Making specs and plans with <code>npm run new</code> and the same short name avoids this.</p></details>
+      <details><summary><code>npm run start</code> does nothing on my computer</summary><p>Open <code>src/index.html</code> in your browser by hand: double-click it in your file explorer. For Python, check that <code>python --version</code> works; on some computers the command is <code>python3</code>, so change it in <code>project.config.json</code>.</p></details>
+      <details><summary><code>npm run check</code> says a date is after today</summary><p>The date in a file name must not be in the future. Use <code>npm run new</code> to make files; it uses today's date in your time zone.</p></details>
+      <details><summary>The check says a heading is missing</summary><p>Each document needs the headings from its <code>TEMPLATE.md</code>, written exactly, like <code>## Status</code>. The message names the template to compare with.</p></details>
+      <details><summary>I want to change a rule or a command later</summary><p>Edit <code>project.config.json</code> for commands, protected files and gated commands. Edit <code>CLAUDE.md</code> for everything Claude should know. Commit both like code.</p></details>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>An independent first-timer's guide, built on the six stages and plays of <a href="https://claude.com/resources/articles/the-ai-native-sdlc-playbook" target="_blank" rel="noopener">"The AI-native SDLC playbook"</a> by Louis Claxton (published on claude.com, 21 August 2026). Read the original for the full plays, governance and measures. Sam and the study planner are an invented example.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Copy buttons: copy the code block's text, fall back to selecting it.
+  document.querySelectorAll('.code .copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var code = btn.parentElement.querySelector('pre');
+      var text = code.innerText;
+      function done(label){ btn.textContent = label; setTimeout(function(){ btn.textContent = 'Copy'; }, 1600); }
+      function select(){ var r = document.createRange(); r.selectNodeContents(code); var s = getSelection(); s.removeAllRanges(); s.addRange(r); done('Selected'); }
+      try { navigator.clipboard.writeText(text).then(function(){ done('Copied'); }, select); } catch(e) { select(); }
+    });
+  });
+  // Checklists remember your ticks in this browser only.
+  var KEY = 'first-loop-ticks';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) { saved = {}; }
+  document.querySelectorAll('.done input[type=checkbox]').forEach(function(box){
+    if (saved[box.id]) box.checked = true;
+    box.addEventListener('change', function(){
+      saved[box.id] = box.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch(e) {}
+    });
+  });
+})();
+</script>
+
+</body></html>
