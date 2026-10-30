@@ -83,11 +83,9 @@ const SECRET_PATTERNS = [
   ['an Anthropic API key', new RegExp('sk-' + 'ant-[A-Za-z0-9_-]{20,}')],
   ['an OpenAI-style API key', new RegExp('sk-' + '(proj-)?[A-Za-z0-9]{32,}')],
   ['a Slack token', new RegExp('xo' + 'x[abpr]-[A-Za-z0-9-]{10,}')],
-  ['a Stripe key', new RegExp('(sk|rk)_' + '(live|test)_[A-Za-z0-9]{16,}')],
+  // Stripe-style secret keys, with dashes or underscores: sk_live_..., rk_test_..., sk-live-...
+  ['a Stripe-style secret key', new RegExp('\\b(sk|rk)[-_]' + '(live|test)[-_][A-Za-z0-9]{16,}')],
   ['a Google API key', new RegExp('AI' + 'za[0-9A-Za-z_-]{35}')],
-  // key = "..." that mixes capitals, small letters and digits, like real keys do.
-  // Names such as key: "ArrowLeft" or a storage name like "study-planner-v1" stay allowed.
-  ['a key written in code', new RegExp('\\b[Kk][Ee][Yy]["\'\\]]*\\s*[:=]\\s*["\'](?=[^"\'\\s]*\\d)(?=[^"\'\\s]*[a-z])(?=[^"\'\\s]*[A-Z])[^"\'\\s]{20,}["\']')],
   // password = "...", API_KEY: '...', config["SECRET_KEY"] = "..."
   ['a password or key written in code', new RegExp('(password|passwd|secret|api_?key|token)(_?key)?["\'\\]]*\\s*[:=]\\s*["\'][^"\'\\s]{8,}["\']', 'i')],
 ];

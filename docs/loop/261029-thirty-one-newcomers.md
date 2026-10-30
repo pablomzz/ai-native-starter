@@ -45,7 +45,8 @@ Zoe's key (`sk-live-...`) was not caught, and neither would a Stripe `sk_live_` 
 - New `tools/config.js`: a broken `project.config.json` gets a plain message with the line number. This covers check, test, start, lint, build, new and accept.
 - `tools/tools.test.js` has 15 new tests: 11 for the fixes above, which all failed on the tools before this change, and 4 for what the review found.
 - `docs/guide.html` explains the broken-config message, cities as time zones, and that init runs once.
-- With the owner's yes: `tools/lib.js` now knows Stripe and Google keys, and a `key = "..."` that mixes capitals, small letters and digits. Names like `key: "ArrowLeft"` or a storage name stay allowed. Four new guardrail evals (22 to 25) prove both sides.
+- With the owner's yes: `tools/lib.js` now knows Stripe-style secret keys (`sk_live_`, `rk_test_`, and Zoe's `sk-live-`), whatever the variable is called, and Google `AIza` keys. A first try also flagged any `key = "..."` mixing capitals, small letters and digits. The review showed it blocked ordinary code like `key = 'studyPlannerSessionsV2'`, so it was dropped. Evals 22 to 24 prove the keys are refused. Eval 25 proves that lookalikes stay allowed: camelCase storage names, list keys, image data and public `pk_` keys.
 
 ## Open
+- A plain `key = "..."` with an unknown key shape is still not caught. Telling it apart from ordinary names needs more than a pattern.
 - Still nobody on real Windows. Paths are handled, but Git Bash itself is untested.
