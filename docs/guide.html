@@ -324,7 +324,7 @@ claude --version</code></pre></div>
       <li><div>
         <h4>Fill in the placeholders</h4>
         <div class="code has-copy"><button class="copy" type="button">Copy</button><pre><code>npm run init</code></pre></div>
-        <p>It asks seven short questions: the project name, your name as it appears in <code>git config user.name</code> (or every owner, if friends are building with you), your time zone (a city like <code>Europe/Madrid</code>, or an offset like <code>GMT-3</code>), the main branch, what you will build with, and a word from your deploy command. Press Enter to keep a suggestion.</p>
+        <p>It asks seven short questions: the project name, your name as it appears in <code>git config user.name</code> (or every owner, if friends are building with you), your time zone (your city, like <code>Madrid</code> or <code>Buenos Aires</code>, or an offset like <code>GMT-3</code>), the main branch, what you will build with, and a word from your deploy command. Press Enter to keep a suggestion.</p>
         <div class="code"><span class="tag">The stack question</span><pre><code>What will you build with?
   1. Plain web page (HTML, CSS, JavaScript) - the easiest start
   2. Python - needs Python 3; init then tells you how to install pytest and ruff
@@ -713,7 +713,8 @@ People think in hours. Now an intent: docs/intent/251110-hours-and-minutes.md</c
       <details><summary>The check says a heading is missing</summary><p>Each document needs the headings from its <code>TEMPLATE.md</code>, written exactly, like <code>## Status</code>. The message names the template to compare with.</p></details>
       <details><summary><code>npm run accept</code> says "Only an owner can accept a document"</summary><p>Your git name is not in the owners list. The message shows both. Set your git name to match, for example <code>git config --global user.name "Sam"</code>, or add your name to <code>owners</code> in <code>project.config.json</code>.</p></details>
       <details><summary><code>npm run accept</code> says the file "still has" something from the template</summary><p>A blank like <code>&lt;short title&gt;</code> is still in the file. Fill it in first, with Claude's help if you like, then accept it. This stops an empty idea from unlocking the next stages.</p></details>
-      <details><summary>I want to change a rule or a command later</summary><p>Edit <code>project.config.json</code> for commands, protected files and gated commands. Edit <code>CLAUDE.md</code> for everything Claude should know. Commit both like code.</p></details>
+      <details><summary>A command says <code>project.config.json</code> is broken</summary><p>A hand edit left a small mistake, often a comma after the last item in a list. The message gives the line. Run <code>git diff project.config.json</code> to see what changed, and fix it there.</p></details>
+      <details><summary>I want to change a rule or a command later</summary><p>Edit <code>project.config.json</code> for owners, time zone, commands, protected files and gated commands. Edit <code>CLAUDE.md</code> for everything Claude should know. Commit both like code. Running <code>npm run init</code> again changes nothing once the project is set up.</p></details>
     </div>
   </section>
 </div>

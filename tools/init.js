@@ -6,6 +6,7 @@ const path = require('path');
 const readline = require('readline');
 const { spawnSync } = require('child_process');
 const { PLACEHOLDER_RE, today } = require('./lib');
+const { loadConfig } = require('./config');
 
 const root = process.cwd();
 const useDefaults = process.argv.includes('--yes');
@@ -14,11 +15,25 @@ const tzGuess = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 const gitName = (spawnSync('git', ['config', 'user.name'], { encoding: 'utf8' }).stdout || '').trim();
 
 // Turn what people type into a time zone name: "GMT-3", "UTC+2" and "-3" become Etc/GMT+3 and so on
-// (those names flip the sign on purpose). Returns null when it is not a time zone.
+// (those names flip the sign on purpose), and a city such as "Buenos Aires" or "são paulo" finds its zone.
+// Short codes like EST are refused: they mean different places, and EST never changes for summer.
+// Returns null when it is not a time zone.
 function toTimeZone(input) {
   const s = String(input).trim();
   if (/^(gmt|utc|z)$/i.test(s)) return 'UTC';
   const off = /^(?:gmt|utc)?\s*([+-])\s*(\d{1,2})(?::?00)?$/i.exec(s);
+  if (!off && !s.includes('/')) {
+    const want = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[\s-]+/g, '_');
+    const zones = Intl.supportedValuesOf ? Intl.supportedValuesOf('timeZone') : [];
+    const city = zones.find((z) => z.toLowerCase().endsWith('/' + want));
+    if (city) return city;
+    // Renamed cities (Kolkata, Kyiv) are valid but missing from that list: try them under each region.
+    const titled = want.replace(/(^|_)([a-z])/g, (m, a, b) => a + b.toUpperCase());
+    for (const region of ['America', 'Europe', 'Asia', 'Africa', 'Australia', 'Pacific', 'Atlantic', 'Indian']) {
+      try { new Intl.DateTimeFormat('en-GB', { timeZone: `${region}/${titled}` }); return `${region}/${titled}`; } catch { /* next */ }
+    }
+    if (/^[a-z]{2,5}\d*([a-z]{2,4})?$/i.test(s)) return null;
+  }
   const name = off ? (Number(off[2]) === 0 ? 'UTC' : `Etc/GMT${off[1] === '+' ? '-' : '+'}${Number(off[2])}`) : s;
   let real;
   try { real = new Intl.DateTimeFormat('en-GB', { timeZone: name }).resolvedOptions().timeZone; } catch { return null; }
@@ -64,6 +79,13 @@ function copyDir(from, to) {
 }
 
 (async () => {
+  const before = loadConfig(root);
+  if (before.projectName && !new RegExp(PLACEHOLDER_RE.source).test(before.projectName)) {
+    console.log('This project is already set up, so init changes nothing.');
+    console.log('To change an answer, edit project.config.json (owners, timezone, commands) and CLAUDE.md, then commit both.');
+    process.exit(0);
+  }
+  if (!gitName) console.log('Tip: tell git your name first, so npm run accept knows you: git config --global user.name "Your Name"\n');
   const ask = await makeAsker();
   if (!useDefaults && process.stdin.isTTY) console.log('Answer a few questions. Press Enter to keep the suggestion in [brackets].\n');
 
@@ -74,7 +96,7 @@ function copyDir(from, to) {
   let tzAnswer = await ask('Your time zone, like America/Sao_Paulo or GMT-3', tzGuess);
   A.TIMEZONE = toTimeZone(tzAnswer);
   while (!A.TIMEZONE && interactive) {
-    console.log(`"${tzAnswer}" is not a time zone I know. Try a city name, like Europe/Madrid, or an offset, like GMT-3.`);
+    console.log(`"${tzAnswer}" is not a time zone I know. Try your city, like Madrid or Buenos Aires, or an offset, like GMT-3. Short codes like EST mean different places, so they are not used.`);
     tzAnswer = await ask('Your time zone', tzGuess);
     A.TIMEZONE = toTimeZone(tzAnswer);
   }
@@ -88,8 +110,15 @@ function copyDir(from, to) {
 
   console.log('\nWhat will you build with?');
   STACK_IDS.forEach((id, i) => console.log(`  ${i + 1}. ${STACKS[id].label}`));
-  let pick = (await ask('Pick a number', '1')).toLowerCase();
-  let stack = STACK_IDS[Number(pick) - 1] || (STACK_IDS.includes(pick) ? pick : 'web');
+  const toStack = (a) => { const p = a.toLowerCase().replace(/\.$/, ''); return STACK_IDS[Number(p) - 1] || (STACK_IDS.includes(p) ? p : null); };
+  let pick = await ask('Pick a number', '1');
+  let stack = toStack(pick);
+  while (!stack && interactive) {
+    console.log(`"${pick}" is not on the list. Type a number from 1 to ${STACK_IDS.length}.`);
+    pick = await ask('Pick a number', '1');
+    stack = toStack(pick);
+  }
+  if (!stack) { console.log(`"${pick}" is not on the list, so using 1 (${STACKS.web.label}).`); stack = 'web'; }
   A.STACK = stack;
 
   const preset = STACKS[stack];
@@ -104,7 +133,7 @@ function copyDir(from, to) {
   if (ask.close) ask.close();
 
   A.START_DATE = today(A.TIMEZONE);
-  const ownerList = A.YOUR_NAME.split(',').map((s) => s.trim()).filter(Boolean);
+  const ownerList = A.YOUR_NAME.split(/\s*(?:[,;&]|\band\b|\by\b)\s*/i).map((s) => s.trim()).filter(Boolean);
   A.YOUR_NAME = ownerList.join(', ');
 
   let changed = 0;
