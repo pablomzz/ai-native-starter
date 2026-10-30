@@ -4,11 +4,26 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const { spawnSync } = require('child_process');
 const { PLACEHOLDER_RE, today } = require('./lib');
 
 const root = process.cwd();
 const useDefaults = process.argv.includes('--yes');
+const interactive = !useDefaults && process.stdin.isTTY;
 const tzGuess = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+const gitName = (spawnSync('git', ['config', 'user.name'], { encoding: 'utf8' }).stdout || '').trim();
+
+// Turn what people type into a time zone name: "GMT-3", "UTC+2" and "-3" become Etc/GMT+3 and so on
+// (those names flip the sign on purpose). Returns null when it is not a time zone.
+function toTimeZone(input) {
+  const s = String(input).trim();
+  if (/^(gmt|utc|z)$/i.test(s)) return 'UTC';
+  const off = /^(?:gmt|utc)?\s*([+-])\s*(\d{1,2})(?::?00)?$/i.exec(s);
+  const name = off ? (Number(off[2]) === 0 ? 'UTC' : `Etc/GMT${off[1] === '+' ? '-' : '+'}${Number(off[2])}`) : s;
+  let real;
+  try { real = new Intl.DateTimeFormat('en-GB', { timeZone: name }).resolvedOptions().timeZone; } catch { return null; }
+  return /^[+-]/.test(real) ? null : real;
+}
 const STACKS = JSON.parse(fs.readFileSync(path.join(__dirname, 'stacks', 'stacks.json'), 'utf8'));
 const STACK_IDS = Object.keys(STACKS);
 
@@ -55,8 +70,20 @@ function copyDir(from, to) {
   const A = {};
   A.PROJECT_NAME = await ask('Project name', path.basename(root));
   A.ONE_LINE_DESCRIPTION = await ask('In one line, what does it do?', 'A small project built with an AI-native workflow.');
-  A.YOUR_NAME = await ask('Your name. Working with friends? List every owner, separated by commas', 'Owner');
-  A.TIMEZONE = await ask('Your time zone', tzGuess);
+  A.YOUR_NAME = await ask('Your name, as in "git config user.name". Working with friends? List every owner, separated by commas', gitName || 'Owner');
+  let tzAnswer = await ask('Your time zone, like America/Sao_Paulo or GMT-3', tzGuess);
+  A.TIMEZONE = toTimeZone(tzAnswer);
+  while (!A.TIMEZONE && interactive) {
+    console.log(`"${tzAnswer}" is not a time zone I know. Try a city name, like Europe/Madrid, or an offset, like GMT-3.`);
+    tzAnswer = await ask('Your time zone', tzGuess);
+    A.TIMEZONE = toTimeZone(tzAnswer);
+  }
+  if (!A.TIMEZONE) {
+    console.log(`"${tzAnswer}" is not a time zone name, so using ${tzGuess}. Change "timezone" in project.config.json if that is wrong.`);
+    A.TIMEZONE = tzGuess;
+  } else if (A.TIMEZONE !== tzAnswer) {
+    console.log(`Using ${A.TIMEZONE} for "${tzAnswer}".`);
+  }
   A.DEFAULT_BRANCH = await ask('Main branch name', 'main');
 
   console.log('\nWhat will you build with?');
@@ -76,10 +103,6 @@ function copyDir(from, to) {
   A.DEPLOY_COMMAND_PATTERN = await ask('A word in your deploy command, so Claude asks first (for example: deploy)', 'deploy');
   if (ask.close) ask.close();
 
-  try { new Intl.DateTimeFormat('en-GB', { timeZone: A.TIMEZONE }); } catch {
-    console.log(`"${A.TIMEZONE}" is not a time zone name, so using ${tzGuess}.`);
-    A.TIMEZONE = tzGuess;
-  }
   A.START_DATE = today(A.TIMEZONE);
   const ownerList = A.YOUR_NAME.split(',').map((s) => s.trim()).filter(Boolean);
   A.YOUR_NAME = ownerList.join(', ');
@@ -112,5 +135,6 @@ function copyDir(from, to) {
   }
 
   console.log(`\nDone: filled in ${changed} file(s), added ${stack} starter code and docs/loop/${A.START_DATE}-started.md.`);
+  if (fs.existsSync(path.join(root, 'requirements-dev.txt'))) console.log('First install the Python tools: python -m pip install -r requirements-dev.txt');
   console.log('Next: npm run check, then npm run test');
 })();

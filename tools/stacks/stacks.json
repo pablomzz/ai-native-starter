@@ -9,7 +9,7 @@
     "DESCRIBE_SRC_LAYOUT": "index.html is the page; each .js file holds functions that tests in tests/ check."
   },
   "python": {
-    "label": "Python - install Python 3 and run: python -m pip install pytest ruff",
+    "label": "Python - needs Python 3; init then tells you how to install pytest and ruff",
     "LANGUAGE_AND_FRAMEWORK": "Python 3. Tests use pytest, in files named tests/test_*.py. Lint with ruff.",
     "BUILD_COMMAND": "echo \"no build step\"",
     "TEST_COMMAND": "python -m pytest -q",
