@@ -17,13 +17,14 @@ Owners: pablomzz. Dates use Etc/GMT+3 time, written as `yymmdd`.
 1. Plan: an idea becomes `docs/intent/<yymmdd>-<name>.md` (skill `write-intent`). Only an owner accepts it.
 2. Design: an accepted intent becomes `docs/spec/<yymmdd>-<name>.md`, with the skills applied and concerns flagged.
 3. Build: for any change to `src/`, start in plan mode. Write `docs/plan/<yymmdd>-<name>.md`, wait for an owner to accept it, then build. Write the tests first.
-4. Test: run `npm run test` after each change. Done means the tests and `npm run check` pass (agent `verifier`).
+4. Test: run `npm run test` after each change. Done means the tests and `npm run check` pass (agent `verifier`), and the owner can explain the change in their own words.
 5. Deploy: before a pull request, run the `reviewer` agent against `REVIEW.md` and the plan. Link the plan in the pull request.
 6. Maintain: when something breaks, write an incident, add a test or eval that fails on it, and add a loop entry in `docs/loop/`. When a plan's work is merged, mark it Done.
 
 ## Conventions
 - Plain HTML, CSS and JavaScript. No framework. Tests use node --test and files named *.test.js.
-- Keep changes small: one intent, one branch, one pull request. Branch names match the doc name, like `weekly-minutes`.
+- Keep changes small: one intent, one branch, one pull request, and one thing in progress at a time. Branch names match the doc name, like `weekly-minutes`.
+- Stay inside the intent's Appetite. When work runs past it, stop and suggest a smaller version instead of carrying on.
 - Never put a password, token or key in a file. Read secrets from environment variables.
 - Write docs in plain language (skill `plain-language`). Explain new words to the owner: they may be new to coding.
 - Never change a document's Status yourself unless an owner asks; suggest the `npm run accept` command instead.

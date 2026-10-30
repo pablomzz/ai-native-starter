@@ -90,7 +90,7 @@ test('accept works for an owner once the intent is filled in', () => {
   init(dir);
   run(dir, ['tools/new-doc.js', 'intent', 'timer']);
   const file = path.join(dir, 'docs', 'intent', fs.readdirSync(path.join(dir, 'docs', 'intent')).find((f) => f.endsWith('-timer.md')));
-  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('<short title>', 'study timer').replace('<something you can see or test>', 'the timer counts down'));
+  fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('<short title>', 'study timer').replace('<something you can see or test>', 'the timer counts down').replace('<how long, like two evenings>', 'one evening'));
   const r = run(dir, ['tools/status.js', 'accept', path.relative(dir, file)]);
   assert.equal(r.code, 0, r.out);
   assert.match(fs.readFileSync(file, 'utf8'), /^Accepted \d{6} by Maya$/m);
@@ -188,7 +188,7 @@ function readyIntent(dir, name) {
   run(dir, ['tools/new-doc.js', 'intent', name]);
   const rel = `docs/intent/${fs.readdirSync(path.join(dir, 'docs', 'intent')).find((f) => f.endsWith(`-${name}.md`))}`;
   const full = path.join(dir, rel);
-  fs.writeFileSync(full, fs.readFileSync(full, 'utf8').replace('<short title>', name).replace('<something you can see or test>', 'it works'));
+  fs.writeFileSync(full, fs.readFileSync(full, 'utf8').replace('<short title>', name).replace('<something you can see or test>', 'it works').replace('<how long, like two evenings>', 'one evening'));
   return rel;
 }
 
@@ -316,4 +316,42 @@ test('check-integrity does not count a commented-out CI step', () => {
   fs.mkdirSync(path.join(dir, '.github', 'workflows'), { recursive: true });
   fs.writeFileSync(path.join(dir, '.github', 'workflows', 'ci.yml'), '      - run: npm run check\n      - run: echo skip # npm run test\n');
   assert.match(checkIntegrity(dir).join('\n'), /CI no longer runs "npm run test"/);
+});
+
+// From the agile research: one thing in progress at a time.
+test('check reminds you when two plans are in progress at once', () => {
+  const { checkDocs } = require('./checks/check-docs');
+  const dir = sandbox();
+  init(dir);
+  for (const n of ['one', 'two']) {
+    run(dir, ['tools/new-doc.js', 'plan', n]);
+    const f = path.join(dir, 'docs', 'plan', fs.readdirSync(path.join(dir, 'docs', 'plan')).find((x) => x.endsWith(`-${n}.md`)));
+    fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/^Proposed$/m, 'Accepted 260101 by Sam').replace(/docs\/intent\/\S+/, 'none: test').replace(/docs\/spec\/\S+/, 'none: test'));
+  }
+  assert.match(checkDocs(dir).warnings.join('\n'), /2 plans are in progress at once/);
+});
+
+test('a plan marked Done no longer counts as in progress', () => {
+  const { checkDocs } = require('./checks/check-docs');
+  const dir = sandbox();
+  init(dir);
+  const files = [];
+  for (const n of ['one', 'two']) {
+    run(dir, ['tools/new-doc.js', 'plan', n]);
+    const f = path.join(dir, 'docs', 'plan', fs.readdirSync(path.join(dir, 'docs', 'plan')).find((x) => x.endsWith(`-${n}.md`)));
+    fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/^Proposed$/m, 'Accepted 260101 by Sam').replace(/docs\/intent\/\S+/, 'none: test').replace(/docs\/spec\/\S+/, 'none: test'));
+    files.push(f);
+  }
+  run(dir, ['tools/status.js', 'done', path.relative(dir, files[0])]);
+  assert.doesNotMatch(checkDocs(dir).warnings.join('\n'), /plans are in progress/);
+});
+
+test('accept refuses an intent whose Appetite is still blank', () => {
+  const dir = sandbox('Sam');
+  init(dir);
+  run(dir, ['tools/new-doc.js', 'intent', 'timer']);
+  const rel = `docs/intent/${fs.readdirSync(path.join(dir, 'docs', 'intent')).find((f) => f.endsWith('-timer.md'))}`;
+  const full = path.join(dir, rel);
+  fs.writeFileSync(full, fs.readFileSync(full, 'utf8').replace('<short title>', 'timer').replace('<something you can see or test>', 'it works'));
+  assert.match(run(dir, ['tools/status.js', 'accept', rel]).out, /still has "<how long, like two evenings>"/);
 });
