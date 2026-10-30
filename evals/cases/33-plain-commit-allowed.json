@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "the twin of 32: an ordinary commit is allowed",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git commit -am \"feat: weekly totals\""
+    }
+  },
+  "expect": "allow"
+}

@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "the twin of 41: searching the log for the words --no-verify skips nothing",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git log --oneline --grep=no-verify"
+    }
+  },
+  "expect": "allow"
+}

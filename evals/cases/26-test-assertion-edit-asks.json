@@ -1,0 +1,13 @@
+{
+  "hook": "guard-checks",
+  "why": "changing what a test expects, to make it pass, must ask the owner",
+  "input": {
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "tests/greeting.test.js",
+      "old_string": "  assert.equal(greeting(15), 'Good afternoon');",
+      "new_string": "  assert.equal(greeting(15), 'Good evening');"
+    }
+  },
+  "expect": "ask"
+}

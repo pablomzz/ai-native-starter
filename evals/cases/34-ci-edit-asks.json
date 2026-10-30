@@ -1,0 +1,13 @@
+{
+  "hook": "guard-checks",
+  "why": "editing CI (for example removing the Test step) must ask the owner",
+  "input": {
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": ".github/workflows/ci.yml",
+      "old_string": "      - name: Test\n        run: npm run test\n",
+      "new_string": ""
+    }
+  },
+  "expect": "ask"
+}

@@ -1,0 +1,12 @@
+{
+  "hook": "guard-checks",
+  "why": "the twin of 28: writing a brand-new test file is allowed (tests first)",
+  "input": {
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "tests/planner.test.js",
+      "content": "const { test } = require('node:test');\nconst assert = require('node:assert');\ntest('empty', () => { assert.deepEqual([], []); });\n"
+    }
+  },
+  "expect": "allow"
+}

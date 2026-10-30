@@ -19,6 +19,8 @@
     "check:docs": "node tools/checks/check-docs.js",
     "check:evals": "node tools/checks/check-evals.js",
     "check:secrets": "node tools/checks/check-secrets.js",
+    "check:integrity": "node tools/checks/check-integrity.js",
+    "simulate": "node tools/simulate-personas.js",
     "build": "node tools/run.js build",
     "test": "node tools/run.js test",
     "lint": "node tools/run.js lint",

@@ -1,0 +1,16 @@
+{
+  "hook": "guard-checks",
+  "why": "the twin of 37: renaming a test's title leaves every check as it was",
+  "files": {
+    "tests/greeting.test.js": "const { test } = require('node:test');\nconst assert = require('node:assert');\nconst { greeting } = require('../src/greeting');\n\ntest('afternoon', () => {\n  assert.equal(greeting(15), 'Good afternoon');\n});\n"
+  },
+  "input": {
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "tests/greeting.test.js",
+      "old_string": "test('afternoon'",
+      "new_string": "test('says good afternoon at 3pm'"
+    }
+  },
+  "expect": "allow"
+}

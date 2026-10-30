@@ -1,0 +1,11 @@
+{
+  "hook": "guard-checks",
+  "why": "renaming a test file to another test file keeps the test, so it is allowed",
+  "input": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "mv tests/greeting.test.js tests/greetings.test.js"
+    }
+  },
+  "expect": "allow"
+}

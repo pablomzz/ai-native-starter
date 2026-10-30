@@ -22,6 +22,7 @@ The step-by-step guide (`docs/guide.html`, open it with `npm run guide`) explain
 | `docs/intent/`, `docs/spec/`, `docs/plan/` | The chain from idea to code. Each folder has a `TEMPLATE.md`. |
 | `docs/incidents/` | What broke, and what now stops it happening again. |
 | `docs/loop/` | One file per lesson learned. |
+| `docs/research/`, `reports/`, `research_notes/` | The research behind the starter, and the newcomer personas it is tested against. |
 | `docs/guide.html` | The step-by-step guide for first-timers. Open it with `npm run guide`. |
 | `.claude/agents/` | Helpers: `verifier`, `reviewer`, `researcher`. |
 | `.claude/skills/` | Rules Claude applies: `plain-language`, `security-basics`, `write-intent`. |
@@ -41,6 +42,7 @@ The step-by-step guide (`docs/guide.html`, open it with `npm run guide`) explain
 | `npm run start` / `test` / `lint` / `build` | Run your project's commands from `project.config.json`. |
 | `npm run check` | Check the docs chain, run the guardrail evals, scan for secrets, list unfilled placeholders. |
 | `npm run check:strict` | The same, but unfilled placeholders fail. |
+| `npm run simulate` | Run five research-based newcomer personas against the guardrails, with an agent that makes mistakes. Prints what was stopped and what got through. |
 
 ## Working with a friend
 - Put every owner in `npm run init` ("Ana, Bruno"). `npm run accept` uses your git name if it is in the list.
