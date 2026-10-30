@@ -8,4 +8,4 @@ The `reviewer` agent reads every pull request against this list, then a person d
 4. **Small and focused.** One intent per pull request. Unrelated edits go in their own change.
 5. **Readable.** Names say what things are. Docs follow `plain-language`.
 6. **Safe to undo.** It is clear how to roll this back.
-7. {{ADD_A_RULE_YOUR_PROJECT_NEEDS}}
+7. **Works for everyone.** Every button and form field has a label, and the page still works on a phone-sized screen.
